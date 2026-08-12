@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 — 手組み診断</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Maru+Gothic:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #F0EDE8;
+      --surface: #FDFBF8;
+      --border: rgba(37,32,23,0.10);
+      --ink: #252017;
+      --ink-2: #6B6456;
+      --ink-3: #9E9589;
+      --s-main: #C4704D;
+      --s-light: #F9EEE8;
+      --m-main: #5C7FA3;
+      --m-light: #E8F0F8;
+      --green: #4CAF7D;
+      --green-light: #E8F5EE;
+      --red: #E05252;
+      --red-light: #FDE8E8;
+      --shadow: 0 2px 20px rgba(37,32,23,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN ── */
+    #login-view {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow);
+    }
+
+    .login-icon { font-size: 40px; display: block; margin-bottom: 20px; }
+
+    .login-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .login-sub { font-size: 13px; color: var(--ink-2); margin-bottom: 32px; }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-2);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 15px;
+      color: var(--ink);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 20px;
+    }
+
+    .field-input:focus { border-color: var(--ink-2); }
+
+    .btn-login {
+      width: 100%;
+      padding: 16px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .btn-login:hover { opacity: 0.88; }
+    .btn-login:active { transform: scale(0.97); }
+
+    .login-error {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: var(--red-light);
+      color: var(--red);
+      border-radius: 12px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* ── ADMIN LAYOUT ── */
+    #admin-view { display: none; }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-title span { font-size: 18px; }
+
+    .btn-logout {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 13px;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-logout:hover { border-color: var(--ink-2); color: var(--ink); }
+
+    .admin-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 20px 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon { font-size: 20px; }
+
+    .card-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .card-body { padding: 0 24px 24px; }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-item {
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .stat-item.total { background: var(--bg); }
+    .stat-item.s-stat { background: var(--s-light); }
+    .stat-item.m-stat { background: var(--m-light); }
+
+    .stat-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-2); margin-bottom: 8px; }
+    .stat-value { font-family: 'Shippori Mincho', serif; font-size: 36px; font-weight: 700; line-height: 1; }
+    .stat-item.s-stat .stat-value { color: var(--s-main); }
+    .stat-item.m-stat .stat-value { color: var(--m-main); }
+
+    .stat-bar-wrap { margin-top: 20px; }
+    .stat-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+    .stat-bar-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+    .stat-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--s-main), var(--m-main));
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      width: 0%;
+    }
+
+    /* ── SETTINGS EDITOR ── */
+    .type-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .type-tag.s { background: var(--s-light); color: var(--s-main); }
+    .type-tag.m { background: var(--m-light); color: var(--m-main); }
+
+    .field-group { margin-bottom: 16px; }
+
+    .field-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .field-group input,
+    .field-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field-group input:focus,
+    .field-group textarea:focus { border-color: var(--ink-2); }
+
+    .field-group textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 560px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    .editor-divider {
+      width: 1px;
+      background: var(--border);
+      margin: 0 -24px;
+    }
+
+    .save-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-save {
+      padding: 12px 28px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .btn-save:hover { opacity: 0.85; }
+    .btn-save:active { transform: scale(0.97); }
+    .btn-save:disabled { opacity: 0.5; cursor: default; }
+
+    .save-msg {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .save-msg.show { opacity: 1; }
+    .save-msg.success { background: var(--green-light); color: var(--green); }
+    .save-msg.error { background: var(--red-light); color: var(--red); }
+
+    .loading-row {
+      padding: 32px;
+      text-align: center;
+      color: var(--ink-3);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-view">
+    <div class="login-card">
+      <span class="login-icon">🔐</span>
+      <h1 class="login-title">管理画面</h1>
+      <p class="login-sub">手組み診断 — Admin</p>
+      <label class="field-label" for="pw-input">パスワード</label>
+      <input
+        type="password"
+        id="pw-input"
+        class="field-input"
+        placeholder="パスワードを入力"
+        onkeydown="if(event.key==='Enter') doLogin()"
+        autofocus
+      >
+      <button class="btn-login" onclick="doLogin()">ログイン</button>
+      <p class="login-error" id="login-error">パスワードが違います</p>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="admin-view">
+    <div class="topbar">
+      <div class="topbar-title"><span>📊</span> 管理画面</div>
+      <button class="btn-logout" onclick="doLogout()">ログアウト</button>
+    </div>
+
+    <div class="admin-body">
+
+      <!-- STATS -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">📈</span>
+          <h2 class="card-title">診断結果の集計</h2>
+        </div>
+        <div class="card-body">
+          <div class="stats-grid" id="stats-grid">
+            <div class="loading-row" style="grid-column:1/-1">読み込み中…</div>
+          </div>
+          <div class="stat-bar-wrap" id="stat-bar-wrap" style="display:none">
+            <div class="stat-bar-label">
+              <span id="bar-s-label">Sタイプ</span>
+              <span id="bar-m-label">Mタイプ</span>
+            </div>
+            <div class="stat-bar-track">
+              <div class="stat-bar-fill" id="stat-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEXT EDITOR -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">✏️</span>
+          <h2 class="card-title">結果文言の編集</h2>
+        </div>
+        <div id="editor-loading" class="loading-row">読み込み中…</div>
+        <div id="editor-body" style="display:none">
+          <div class="card-body">
+            <div class="editor-grid">
+              <!-- S TYPE -->
+              <div>
+                <div class="type-tag s">✊ Sタイプ</div>
+                <div class="field-group">
+                  <label>タイトル</label>
+                  <input type="text" id="s-title" placeholder="例: Sタイプ">
+                </div>
+                <div class="field-group">
+                  <label>サブタイトル</label>
+                  <input type="text" id="s-subtitle" placeholder="例: 自分の軸を持つ、独立型">
+                </div>
+                <div class="field-group">
+                  <label>説明文</label>
+                  <textarea id="s-description" rows="4" placeholder="結果の説明文"></textarea>
+                </div>
+              </div>
+              <!-- M TYPE -->
+              <div>
+                <div class="type-tag m">🤝 Mタイプ</div>
+                <div class="field-group">
+                  <label>タイトル</label>
+                  <input type="text" id="m-title" placeholder="例: Mタイプ">
+                </div>
+                <div class="field-group">
+                  <label>サブタイトル</label>
+                  <input type="text" id="m-subtitle" placeholder="例: つながりから力を得る、協調型">
+                </div>
+                <div class="field-group">
+                  <label>説明文</label>
+                  <textarea id="m-description" rows="4" placeholder="結果の説明文"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="save-row">
+            <button class="btn-save" id="btn-save" onclick="saveSettings()">保存する</button>
+            <span class="save-msg" id="save-msg"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ================================================================
+    // ⚙️  CONFIG (Vercelの環境変数で自動置換されます)
+    // ================================================================
+    const SUPABASE_URL = '__SUPABASE_URL__';
+    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+    const ADMIN_PASSWORD = '__ADMIN_PASSWORD__';
+
+    const SESSION_KEY = 'kantei_admin_auth';
+    const configured = SUPABASE_URL !== '__SUPABASE_URL__' && SUPABASE_URL.length > 10;
+
+    let db = null;
+    if (configured) {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // ── AUTH ──
+    function doLogin() {
+      const val = document.getElementById('pw-input').value;
+      if (val === ADMIN_PASSWORD) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        showAdmin();
+      } else {
+        const err = document.getElementById('login-error');
+        err.style.display = 'block';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+        setTimeout(() => { err.style.display = 'none'; }, 3000);
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem(SESSION_KEY);
+      document.getElementById('admin-view').style.display = 'none';
+      document.getElementById('login-view').style.display = 'flex';
+    }
+
+    function showAdmin() {
+      document.getElementById('login-view').style.display = 'none';
+      document.getElementById('admin-view').style.display = 'block';
+      if (db) {
+        loadStats();
+        loadEditorSettings();
+      } else {
+        document.getElementById('stats-grid').innerHTML = '<div class="loading-row" style="grid-column:1/-1;color:#E05252">Supabaseが未設定です。環境変数を設定してください。</div>';
+        document.getElementById('editor-loading').textContent = 'Supabaseが未設定です。';
+      }
+    }
+
+    // Check session on load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem(SESSION_KEY) === '1') showAdmin();
+    });
+
+    // ── STATS ──
+    async function loadStats() {
+      try {
+        const { data } = await db.from('results').select('type');
+        const counts = { S: 0, M: 0 };
+        (data || []).forEach(r => { counts[r.type] = (counts[r.type] || 0) + 1; });
+        const total = counts.S + counts.M;
+
+        document.getElementById('stats-grid').innerHTML = `
+          <div class="stat-item total">
+            <div class="stat-label">TOTAL</div>
+            <div class="stat-value">${total}</div>
+          </div>
+          <div class="stat-item s-stat">
+            <div class="stat-label">S タイプ</div>
+            <div class="stat-value">${counts.S}</div>
+          </div>
+          <div class="stat-item m-stat">
+            <div class="stat-label">M タイプ</div>
+            <div class="stat-value">${counts.M}</div>
+          </div>
+        `;
+
+        if (total > 0) {
+          const sRatio = Math.round((counts.S / total) * 100);
+          document.getElementById('stat-bar-wrap').style.display = 'block';
+          document.getElementById('bar-s-label').textContent = `Sタイプ ${sRatio}%`;
+          document.getElementById('bar-m-label').textContent = `Mタイプ ${100 - sRatio}%`;
+          setTimeout(() => {
+            document.getElementById('stat-bar-fill').style.width = sRatio + '%';
+          }, 100);
+        }
+      } catch(e) {
+        document.getElementById('stats-grid').innerHTML = '<div class="loading-row" style="grid-column:1/-1;color:#E05252">読み込みエラー</div>';
+      }
+    }
+
+    // ── EDITOR ──
+    async function loadEditorSettings() {
+      try {
+        const { data } = await db.from('settings').select('key, value');
+        (data || []).forEach(row => {
+          const v = row.value;
+          if (row.key === 's_type') {
+            document.getElementById('s-title').value = v.title || '';
+            document.getElementById('s-subtitle').value = v.subtitle || '';
+            document.getElementById('s-description').value = v.description || '';
+          }
+          if (row.key === 'm_type') {
+            document.getElementById('m-title').value = v.title || '';
+            document.getElementById('m-subtitle').value = v.subtitle || '';
+            document.getElementById('m-description').value = v.description || '';
+          }
+        });
+        document.getElementById('editor-loading').style.display = 'none';
+        document.getElementById('editor-body').style.display = 'block';
+      } catch(e) {
+        document.getElementById('editor-loading').textContent = '読み込みエラー';
+      }
+    }
+
+    async function saveSettings() {
+      const btn = document.getElementById('btn-save');
+      const msg = document.getElementById('save-msg');
+      btn.disabled = true;
+      btn.textContent = '保存中…';
+
+      const sData = {
+        title: document.getElementById('s-title').value.trim(),
+        subtitle: document.getElementById('s-subtitle').value.trim(),
+        description: document.getElementById('s-description').value.trim(),
+      };
+      const mData = {
+        title: document.getElementById('m-title').value.trim(),
+        subtitle: document.getElementById('m-subtitle').value.trim(),
+        description: document.getElementById('m-description').value.trim(),
+      };
+
+      try {
+        await db.from('settings')
+          .upsert([
+            { key: 's_type', value: sData, updated_at: new Date().toISOString() },
+            { key: 'm_type', value: mData, updated_at: new Date().toISOString() },
+          ], { onConflict: 'key' });
+
+        msg.textContent = '✓ 保存しました';
+        msg.className = 'save-msg success show';
+      } catch(e) {
+        msg.textContent = '保存に失敗しました';
+        msg.className = 'save-msg error show';
+      }
+
+      btn.disabled = false;
+      btn.textContent = '保存する';
+      setTimeout(() => { msg.classList.remove('show'); }, 3000);
+    }
+  </script>
+</body>
+</html>
