@@ -295,7 +295,7 @@ const COL={
 };
 
 /* ── STATE ── */
-let ans=[], cur=0, _r=null;
+let ans=[], cur=0, _r=null, _busy=false;
 
 /* ── HELPERS ── */
 function show(id){
@@ -336,18 +336,23 @@ function renderQ(){
 }
 
 function pick(k,btn){
+  if(_busy) return;
+  _busy=true;
+  document.querySelectorAll('.obtn').forEach(b=>{b.style.pointerEvents='none'});
   btn.classList.add('sel');
   ans[cur]=k;
   setTimeout(()=>{
     cur++;
+    _busy=false;
     if(cur<12){ renderQ(); }
     else{ loading(); }
-  },260);
+  },280);
 }
 
 function back(){
+  if(_busy) return;
   if(cur===0){ show('s-intro'); return; }
-  cur--; ans.pop(); renderQ();
+  cur--; if(ans.length>cur) ans.length=cur; renderQ();
 }
 
 function loading(){
