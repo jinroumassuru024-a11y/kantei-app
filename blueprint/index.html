@@ -3,254 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>プロジェクト・ブループリント | 関係性タイプ診断</title>
+  <title>プロジェクト・ブループリント | 64タイプ関係性診断</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #EAE5DB;
-      --ink: #1A1714;
-      --ink-mid: #5A544E;
-      --ink-light: #9B958E;
-      --white: #FDFAF5;
-      --radius-card: 28px;
-    }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html { -webkit-font-smoothing: antialiased; }
-    body {
-      min-height: 100svh;
-      background: var(--bg);
-      font-family: 'Noto Sans JP', sans-serif;
-      color: var(--ink);
-      display: flex; align-items: center; justify-content: center;
-      padding: 28px 16px 48px;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 0;
-    }
+    :root { --bg:#EAE5DB; --ink:#1A1714; --ink-mid:#5A544E; --ink-light:#9B958E; --white:#FDFAF5; }
+    *,*::before,*::after { margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
+    html { -webkit-font-smoothing:antialiased; }
+    body { min-height:100svh;background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px 16px 48px; }
+    body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0; }
 
-    /* ─── SCREENS ─── */
-    .screen { display: none; width: 100%; max-width: 440px; z-index: 1; position: relative; }
-    .screen.active { display: block; animation: screenIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
-    @keyframes screenIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    .screen { display:none;width:100%;max-width:440px;z-index:1;position:relative; }
+    .screen.active { display:block;animation:up .5s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes up { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none} }
 
-    /* ─── INTRO ─── */
-    .intro-wrap { background: var(--white); border-radius: var(--radius-card); overflow: hidden; box-shadow: 0 12px 48px rgba(26,23,20,0.14); }
-    .intro-top {
-      background: #1A1714;
-      padding: 48px 36px 40px;
-      position: relative;
-      overflow: hidden;
-    }
-    .intro-top::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 80% 20%, rgba(192,124,82,0.25) 0%, transparent 60%),
-                  radial-gradient(ellipse at 20% 80%, rgba(74,106,138,0.2) 0%, transparent 60%);
-    }
-    .intro-num {
-      position: relative; z-index: 1;
-      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.4); margin-bottom: 32px;
-    }
-    .intro-title {
-      position: relative; z-index: 1;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 34px; font-weight: 800;
-      line-height: 1.3; color: #fff;
-      letter-spacing: -0.01em; margin-bottom: 20px;
-    }
-    .intro-title em { font-style: normal; color: rgba(255,255,255,0.5); font-size: 24px; font-weight: 400; }
-    .intro-lead {
-      position: relative; z-index: 1;
-      font-size: 13px; color: rgba(255,255,255,0.6);
-      line-height: 1.85;
-    }
-    .intro-stats {
-      display: flex; gap: 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      margin-top: 36px; padding-top: 28px;
-      position: relative; z-index: 1;
-    }
-    .stat { flex: 1; text-align: center; }
-    .stat-n { font-family: 'Shippori Mincho', serif; font-size: 28px; font-weight: 700; color: #fff; display: block; }
-    .stat-l { font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); display: block; margin-top: 2px; }
-    .stat-sep { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; }
-    .intro-bottom { padding: 32px 36px; }
-    .intro-points { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 12px; }
-    .intro-points li {
-      font-size: 13px; color: var(--ink-mid); line-height: 1.6;
-      display: flex; align-items: flex-start; gap: 10px;
-    }
-    .intro-points li::before { content: '—'; color: var(--ink-light); flex-shrink: 0; }
-    .btn-start {
-      width: 100%; padding: 20px;
-      background: #1A1714; color: #fff;
-      border: none; border-radius: 18px;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 17px; font-weight: 700;
-      cursor: pointer; letter-spacing: 0.05em;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 20px rgba(26,23,20,0.3);
-    }
-    .btn-start:hover { background: #2E2925; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,23,20,0.35); }
-    .btn-start:active { transform: scale(0.98); }
+    /* INTRO */
+    .intro-wrap { background:var(--white);border-radius:28px;overflow:hidden;box-shadow:0 12px 48px rgba(26,23,20,.15); }
+    .intro-top { background:#1A1714;padding:48px 32px 40px;position:relative;overflow:hidden; }
+    .intro-top::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(176,96,64,.28) 0%,transparent 60%),radial-gradient(ellipse at 15% 85%,rgba(62,90,120,.22) 0%,transparent 55%); }
+    .intro-tag { position:relative;z-index:1;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:28px; }
+    .intro-h { position:relative;z-index:1;font-family:'Shippori Mincho',serif;font-size:34px;font-weight:800;line-height:1.28;color:#fff;letter-spacing:-.01em;margin-bottom:18px; }
+    .intro-h em { font-style:normal;color:rgba(255,255,255,.45);font-size:22px;font-weight:400; }
+    .intro-sub { position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.6);line-height:1.85; }
+    .intro-stats { display:flex;border-top:1px solid rgba(255,255,255,.09);margin-top:34px;padding-top:26px;position:relative;z-index:1; }
+    .stat { flex:1;text-align:center; }
+    .stat-n { font-family:'Shippori Mincho',serif;font-size:26px;font-weight:700;color:#fff;display:block; }
+    .stat-l { font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.38);display:block;margin-top:2px; }
+    .stat-sep { width:1px;background:rgba(255,255,255,.1); }
+    .intro-bot { padding:28px 32px 32px; }
+    .intro-pts { list-style:none;margin-bottom:26px;display:flex;flex-direction:column;gap:10px; }
+    .intro-pts li { font-size:13px;color:var(--ink-mid);line-height:1.65;display:flex;align-items:flex-start;gap:10px; }
+    .intro-pts li::before { content:'—';color:var(--ink-light);flex-shrink:0; }
+    .btn-start { width:100%;padding:20px;background:#1A1714;color:#fff;border:none;border-radius:18px;font-family:'Shippori Mincho',serif;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:all .2s ease;box-shadow:0 4px 20px rgba(26,23,20,.3); }
+    .btn-start:hover { background:#2E2925;transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,23,20,.35); }
+    .btn-start:active { transform:scale(.98); }
 
-    /* ─── STEP SCREENS ─── */
-    .step-card { background: var(--white); border-radius: var(--radius-card); padding: 36px 28px 28px; box-shadow: 0 8px 36px rgba(26,23,20,0.11); }
-    .progress-bar { height: 2px; background: rgba(26,23,20,0.1); border-radius: 2px; margin-bottom: 36px; position: relative; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--ink); border-radius: 2px; transition: width 0.4s cubic-bezier(0.22,1,0.36,1); }
-    .step-meta { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 12px; }
-    .step-q {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 22px; font-weight: 700; line-height: 1.55;
-      color: var(--ink); margin-bottom: 28px;
-    }
-    .cat-grid { display: flex; flex-direction: column; gap: 8px; }
-    .cat-btn {
-      width: 100%; padding: 15px 18px;
-      background: rgba(26,23,20,0.04);
-      border: 1.5px solid transparent;
-      border-radius: 14px; cursor: pointer; text-align: left;
-      display: flex; align-items: center; gap: 14px;
-      transition: all 0.18s cubic-bezier(0.22,1,0.36,1);
-      animation: itemIn 0.4s ease both;
-    }
-    .cat-btn:hover { background: rgba(26,23,20,0.08); border-color: rgba(26,23,20,0.12); transform: translateX(4px); }
-    .cat-btn:active { transform: scale(0.98) translateX(2px); }
-    @keyframes itemIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
-    .cat-em { font-size: 22px; flex-shrink: 0; }
-    .cat-info { flex: 1; }
-    .cat-nm { font-family: 'Shippori Mincho', serif; font-size: 15px; font-weight: 600; color: var(--ink); }
-    .cat-hn { font-size: 11px; color: var(--ink-light); margin-top: 2px; line-height: 1.4; }
-    .cat-arr { font-size: 14px; color: var(--ink-light); flex-shrink: 0; }
-    .btn-back { margin-top: 14px; width: 100%; padding: 10px; background: transparent; border: none; font-size: 12px; color: var(--ink-light); cursor: pointer; border-radius: 10px; transition: all 0.15s ease; }
-    .btn-back:hover { color: var(--ink); background: rgba(26,23,20,0.04); }
+    /* QUESTION */
+    .q-card { background:var(--white);border-radius:28px;padding:32px 28px 24px;box-shadow:0 8px 36px rgba(26,23,20,.11); }
+    .q-prog-wrap { height:3px;background:rgba(26,23,20,.1);border-radius:2px;margin-bottom:32px;overflow:hidden; }
+    .q-prog-fill { height:100%;background:var(--ink);border-radius:2px;transition:width .4s cubic-bezier(.22,1,.36,1); }
+    .q-meta { display:flex;justify-content:space-between;align-items:center;margin-bottom:10px; }
+    .q-cat-lbl { font-size:11px;letter-spacing:.14em;color:var(--ink-light); }
+    .q-step-n { font-size:11px;color:var(--ink-light); }
+    .q-text { font-family:'Shippori Mincho',serif;font-size:20px;font-weight:700;line-height:1.6;color:var(--ink);margin-bottom:24px; }
+    .q-opts { display:flex;flex-direction:column;gap:10px; }
+    .opt-btn { width:100%;padding:20px 20px;background:rgba(26,23,20,.04);border:1.5px solid transparent;border-radius:16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:5px;transition:all .18s cubic-bezier(.22,1,.36,1);animation:fadein .4s ease both; }
+    .opt-btn:hover { background:rgba(26,23,20,.08);border-color:rgba(26,23,20,.14);transform:translateX(3px); }
+    .opt-btn:active { transform:scale(.98); }
+    .opt-btn.selected { background:var(--ink);border-color:var(--ink);transform:scale(.98); }
+    .opt-btn.selected .opt-main,.opt-btn.selected .opt-sub { color:#fff; }
+    @keyframes fadein { from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none} }
+    .opt-main { font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.5; }
+    .opt-sub { font-size:11px;color:var(--ink-light);line-height:1.4; }
+    .btn-back { margin-top:14px;width:100%;padding:10px;background:transparent;border:none;font-size:12px;color:var(--ink-light);cursor:pointer;border-radius:10px;transition:all .15s; }
+    .btn-back:hover { color:var(--ink);background:rgba(26,23,20,.05); }
 
-    /* ─── RESULT ─── */
-    .result-outer { border-radius: var(--radius-card); overflow: hidden; box-shadow: 0 16px 56px rgba(26,23,20,0.2); animation: cardReveal 0.65s cubic-bezier(0.22,1,0.36,1) both; }
-    @keyframes cardReveal { from { opacity: 0; transform: scale(0.94) translateY(20px); } to { opacity: 1; transform: none; } }
+    /* LOADING */
+    .load-card { background:var(--white);border-radius:28px;padding:64px 32px;text-align:center;box-shadow:0 8px 36px rgba(26,23,20,.11); }
+    .load-icon { font-size:52px;margin-bottom:24px;display:block;animation:pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.1)} }
+    .load-txt { font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:28px; }
+    .load-bar-wrap { height:3px;background:rgba(26,23,20,.1);border-radius:2px;overflow:hidden; }
+    .load-bar-fill { height:100%;background:var(--ink);border-radius:2px;width:0;transition:width 1.4s ease; }
 
-    .result-head {
-      padding: 44px 32px 36px;
-      position: relative; overflow: hidden;
-      min-height: 240px;
-      display: flex; flex-direction: column; justify-content: flex-end;
-    }
-    .rh-glow {
-      position: absolute; top: -40px; right: -40px;
-      width: 220px; height: 220px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      pointer-events: none;
-    }
-    .rh-icon {
-      position: absolute; top: 28px; right: 24px;
-      font-size: 100px; line-height: 1;
-      opacity: 0.22; user-select: none;
-      animation: iconFloat 5s ease-in-out infinite;
-    }
-    @keyframes iconFloat { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-10px) rotate(4deg); } }
-    .rh-num {
-      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.5); margin-bottom: 10px; position: relative; z-index: 1;
-    }
-    .rh-name {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 32px; font-weight: 800; color: #fff;
-      line-height: 1.2; margin-bottom: 14px;
-      position: relative; z-index: 1;
-      letter-spacing: -0.01em;
-    }
-    .rh-tags { display: flex; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1; }
-    .rh-tag {
-      font-size: 10px; padding: 4px 10px; border-radius: 100px;
-      background: rgba(255,255,255,0.16); color: rgba(255,255,255,0.85);
-      letter-spacing: 0.05em; backdrop-filter: blur(4px);
-    }
-    .rh-tag.t1 { background: rgba(255,255,255,0.28); font-weight: 600; color: #fff; }
-
-    .result-body { background: var(--white); padding: 0; }
-    .r-catch {
-      padding: 28px 32px 24px;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 16px; line-height: 1.9; color: var(--ink);
-      border-bottom: 1px solid rgba(26,23,20,0.07);
-      font-style: italic;
-    }
-    .r-catch::before { content: '「'; }
-    .r-catch::after { content: '」'; }
-
-    .r-sections { padding: 4px 0; }
-    .r-sec {
-      padding: 22px 32px;
-      border-bottom: 1px solid rgba(26,23,20,0.07);
-      animation: secIn 0.5s ease both;
-    }
-    @keyframes secIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-    .r-sec:nth-child(1) { animation-delay: 0.15s; }
-    .r-sec:nth-child(2) { animation-delay: 0.28s; }
-    .r-sec:nth-child(3) { animation-delay: 0.41s; }
-    .r-sec-head {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--ink-light); margin-bottom: 12px; font-weight: 500;
-    }
-    .r-sec-ico { font-size: 13px; }
-    .r-sec-body {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 15px; line-height: 1.95; color: var(--ink);
-    }
-
-    .r-share { padding: 28px 32px 32px; }
-    .btn-copy {
-      width: 100%; padding: 17px;
-      background: #1A1714; color: #fff;
-      border: none; border-radius: 16px;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 15px; font-weight: 700;
-      cursor: pointer; letter-spacing: 0.04em;
-      transition: all 0.2s ease;
-      margin-bottom: 10px;
-    }
-    .btn-copy:hover { background: #2E2925; transform: translateY(-1px); }
-    .btn-copy:active { transform: scale(0.98); }
-    .btn-copy.copied { background: #3D7A68; }
-    .btn-retry {
-      width: 100%; padding: 14px;
-      background: transparent;
-      border: 1.5px solid rgba(26,23,20,0.14);
-      border-radius: 16px; font-size: 13px; color: var(--ink-light);
-      cursor: pointer; transition: all 0.18s ease; font-family: 'Noto Sans JP', sans-serif;
-    }
-    .btn-retry:hover { border-color: var(--ink); color: var(--ink); background: rgba(26,23,20,0.03); }
-    .share-note { text-align: center; font-size: 11px; color: var(--ink-light); margin-top: 12px; }
+    /* RESULT */
+    .result-outer { border-radius:28px;overflow:hidden;box-shadow:0 16px 56px rgba(26,23,20,.22);animation:reveal .65s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes reveal { from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:none} }
+    .rhead { padding:44px 30px 34px;position:relative;overflow:hidden;min-height:230px;display:flex;flex-direction:column;justify-content:flex-end; }
+    .rhead-bg-icon { position:absolute;top:20px;right:16px;font-size:110px;opacity:.18;line-height:1;user-select:none;animation:float 5s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)} }
+    .rhead-num { font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;position:relative;z-index:1; }
+    .rhead-name { font-family:'Shippori Mincho',serif;font-size:28px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:14px;position:relative;z-index:1;letter-spacing:-.01em; }
+    .rhead-tags { display:flex;gap:5px;flex-wrap:wrap;position:relative;z-index:1; }
+    .rhead-tag { font-size:10px;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.85);letter-spacing:.04em; }
+    .rhead-tag.sub { background:rgba(255,255,255,.28);color:#fff;font-weight:600; }
+    .rbody { background:var(--white); }
+    .rcatch { padding:26px 30px 22px;font-family:'Shippori Mincho',serif;font-size:16px;line-height:1.9;color:var(--ink);border-bottom:1px solid rgba(26,23,20,.07);font-style:italic; }
+    .rcatch::before { content:'「'; }
+    .rcatch::after { content:'」'; }
+    .rsec { padding:22px 30px;border-bottom:1px solid rgba(26,23,20,.07);animation:secin .5s ease both; }
+    .rsec:nth-child(1){animation-delay:.15s}.rsec:nth-child(2){animation-delay:.28s}.rsec:nth-child(3){animation-delay:.41s}
+    @keyframes secin { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none} }
+    .rsec-head { font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;display:flex;align-items:center;gap:7px; }
+    .rsec-head::after { content:'';flex:1;height:1px;background:rgba(26,23,20,.07); }
+    .rsec-body { font-family:'Shippori Mincho',serif;font-size:15px;line-height:1.95;color:var(--ink); }
+    .rall-ans { padding:18px 30px 0;display:flex;flex-wrap:wrap;gap:5px; }
+    .ans-chip { font-size:10px;padding:4px 10px;border-radius:100px;background:rgba(26,23,20,.06);color:var(--ink-mid);letter-spacing:.04em; }
+    .rfoot { padding:22px 30px 30px; }
+    .btn-copy { width:100%;padding:17px;background:#1A1714;color:#fff;border:none;border-radius:16px;font-family:'Shippori Mincho',serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;margin-bottom:9px; }
+    .btn-copy:hover { background:#2E2925;transform:translateY(-1px); }
+    .btn-copy.ok { background:#3D7A58; }
+    .btn-retry { width:100%;padding:13px;background:transparent;border:1.5px solid rgba(26,23,20,.14);border-radius:16px;font-size:13px;color:var(--ink-light);cursor:pointer;transition:all .18s; }
+    .btn-retry:hover { border-color:var(--ink);color:var(--ink);background:rgba(26,23,20,.03); }
+    .share-note { text-align:center;font-size:11px;color:var(--ink-light);margin-top:10px; }
   </style>
 </head>
 <body>
 
-<!-- ── INTRO ── -->
+<!-- INTRO -->
 <div class="screen active" id="s-intro">
   <div class="intro-wrap">
     <div class="intro-top">
-      <p class="intro-num">Project Blueprint — Relationship Type</p>
-      <h1 class="intro-title">あなたの恋愛<br>タイプを<br><em>解き明かす</em></h1>
-      <p class="intro-lead">パートナーとの関係で何を大切にするか——<br>3つの選択から、あなただけのタイプを導き出します。</p>
+      <p class="intro-tag">Project Blueprint — 64 Types</p>
+      <h1 class="intro-h">あなたの恋愛<br>タイプを<br><em>解き明かす</em></h1>
+      <p class="intro-sub">6つの質問に答えるだけ。<br>64パターンの中からあなただけのタイプが出ます。</p>
       <div class="intro-stats">
-        <div class="stat"><span class="stat-n">3</span><span class="stat-l">Questions</span></div>
+        <div class="stat"><span class="stat-n">6</span><span class="stat-l">Questions</span></div>
         <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-n">120</span><span class="stat-l">Patterns</span></div>
+        <div class="stat"><span class="stat-n">64</span><span class="stat-l">Patterns</span></div>
         <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-n">1 min</span><span class="stat-l">Duration</span></div>
+        <div class="stat"><span class="stat-n">2 min</span><span class="stat-l">Duration</span></div>
       </div>
     </div>
-    <div class="intro-bottom">
-      <ul class="intro-points">
-        <li>恋愛で譲れないことと、逆に地雷になることがわかる</li>
+    <div class="intro-bot">
+      <ul class="intro-pts">
+        <li>恋愛で本当に大切にしていることが言語化される</li>
         <li>パートナーへの正しい伝え方・接し方がわかる</li>
         <li>結果をそのままLINEで共有できる</li>
       </ul>
@@ -259,69 +127,48 @@
   </div>
 </div>
 
-<!-- ── STEP 1 ── -->
-<div class="screen" id="s-step1">
-  <div class="step-card">
-    <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
-    <p class="step-meta">Step 1 / 3 — 最も大切なこと</p>
-    <h2 class="step-q">パートナーとの関係で、あなたが一番大切にしていることは？</h2>
-    <div class="cat-grid" id="list1"></div>
-    <button class="btn-back" onclick="goIntro()">← トップに戻る</button>
+<!-- QUESTION -->
+<div class="screen" id="s-q">
+  <div class="q-card">
+    <div class="q-prog-wrap"><div class="q-prog-fill" id="q-prog"></div></div>
+    <div class="q-meta">
+      <span class="q-cat-lbl" id="q-cat-lbl"></span>
+      <span class="q-step-n" id="q-step-n"></span>
+    </div>
+    <h2 class="q-text" id="q-text"></h2>
+    <div class="q-opts" id="q-opts"></div>
+    <button class="btn-back" onclick="goBack()">← 戻る</button>
   </div>
 </div>
 
-<!-- ── STEP 2 ── -->
-<div class="screen" id="s-step2">
-  <div class="step-card">
-    <div class="progress-bar"><div class="progress-fill" style="width:66%"></div></div>
-    <p class="step-meta">Step 2 / 3 — 2番目に大切なこと</p>
-    <h2 class="step-q">次に大切なことは？</h2>
-    <div class="cat-grid" id="list2"></div>
-    <button class="btn-back" onclick="goStep1()">← 戻る</button>
+<!-- LOADING -->
+<div class="screen" id="s-load">
+  <div class="load-card">
+    <span class="load-icon">🔮</span>
+    <p class="load-txt">あなたのタイプを解析中...</p>
+    <div class="load-bar-wrap"><div class="load-bar-fill" id="load-fill"></div></div>
   </div>
 </div>
 
-<!-- ── STEP 3 ── -->
-<div class="screen" id="s-step3">
-  <div class="step-card">
-    <div class="progress-bar"><div class="progress-fill" style="width:99%"></div></div>
-    <p class="step-meta">Step 3 / 3 — 絶対に許せないこと</p>
-    <h2 class="step-q">ここがズレたら<br>絶対に無理——あなたの「地雷」は？</h2>
-    <div class="cat-grid" id="list3"></div>
-    <button class="btn-back" onclick="goStep2()">← 戻る</button>
-  </div>
-</div>
-
-<!-- ── RESULT ── -->
+<!-- RESULT -->
 <div class="screen" id="s-result">
   <div class="result-outer">
-    <div class="result-head" id="r-head">
-      <div class="rh-glow"></div>
-      <div class="rh-icon" id="r-icon"></div>
-      <p class="rh-num" id="r-num"></p>
-      <h2 class="rh-name" id="r-name"></h2>
-      <div class="rh-tags" id="r-tags"></div>
+    <div class="rhead" id="rhead">
+      <div class="rhead-bg-icon" id="r-icon"></div>
+      <p class="rhead-num" id="r-num"></p>
+      <h2 class="rhead-name" id="r-name"></h2>
+      <div class="rhead-tags" id="r-tags"></div>
     </div>
-    <div class="result-body">
-      <p class="r-catch" id="r-catch"></p>
-      <div class="r-sections">
-        <div class="r-sec">
-          <p class="r-sec-head"><span class="r-sec-ico">🌟</span>喜ぶポイント</p>
-          <p class="r-sec-body" id="r-happy"></p>
-        </div>
-        <div class="r-sec">
-          <p class="r-sec-head"><span class="r-sec-ico">⚡</span>地雷ポイント</p>
-          <p class="r-sec-body" id="r-land"></p>
-        </div>
-        <div class="r-sec">
-          <p class="r-sec-head"><span class="r-sec-ico">💡</span>コミュニケーション指南</p>
-          <p class="r-sec-body" id="r-guide"></p>
-        </div>
-      </div>
-      <div class="r-share">
+    <div class="rbody">
+      <p class="rcatch" id="r-catch"></p>
+      <div class="rsec"><p class="rsec-head"><span>🌟</span>喜ぶポイント</p><p class="rsec-body" id="r-happy"></p></div>
+      <div class="rsec"><p class="rsec-head"><span>⚡</span>地雷ポイント</p><p class="rsec-body" id="r-land"></p></div>
+      <div class="rsec"><p class="rsec-head"><span>💡</span>コミュニケーション指南</p><p class="rsec-body" id="r-guide"></p></div>
+      <div class="rall-ans" id="r-all-ans"></div>
+      <div class="rfoot">
         <button class="btn-copy" id="btn-copy" onclick="copyResult()">📋 結果をコピーしてLINEで共有</button>
         <button class="btn-retry" onclick="restart()">もう一度診断する</button>
-        <p class="share-note">コピーしてそのままLINEに貼り付けられます</p>
+        <p class="share-note">コピー後、LINEにそのまま貼り付けられます</p>
       </div>
     </div>
   </div>
@@ -331,237 +178,248 @@
 const SUPABASE_URL = '__SUPABASE_URL__';
 const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 const configured = !SUPABASE_URL.startsWith('__');
-function sbFetch(path, opts={}) {
-  return fetch(SUPABASE_URL+'/rest/v1/'+path, { ...opts, headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization':'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json', ...(opts.headers||{}) } });
-}
+function sbFetch(p,o={}){ return fetch(SUPABASE_URL+'/rest/v1/'+p,{...o,headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',...(o.headers||{})}}); }
 
-/* ── CATEGORIES ── */
-const CATS = [null,
-  { emoji:'⏰', name:'時間の共有',      hint:'「常に一緒」vs「1人の時間も必要」' },
-  { emoji:'💼', name:'仕事の優先度',    hint:'「仕事優先」vs「パートナー最優先」' },
-  { emoji:'🤝', name:'協力のスタンス',  hint:'「なんでも手伝う」vs「各自でこなす」' },
-  { emoji:'💬', name:'コミュニケーション', hint:'「共感重視」vs「問題解決重視」' },
-  { emoji:'💰', name:'お金の価値観',    hint:'「堅実に貯める」vs「今を楽しむ」' },
-  { emoji:'🗺️', name:'将来・人生設計',  hint:'「計画通りに」vs「流れを大事に」' },
+/* ── 6 QUESTIONS ── */
+const Qs = [
+  { cat:'⏰ 時間の共有', q:'週末の理想のすごし方は？',
+    A:{ main:'できれば1日中一緒にいたい', sub:'いつでもそばにいたい派',
+        happy:'一緒にいる時間を惜しまず作ってくれること',
+        pain:'連絡なしで別行動が続き、時間を作ろうとしない姿勢' },
+    B:{ main:'午前は各自、午後から合流でいい', sub:'お互いの時間も大切にしたい派',
+        happy:'お互いの時間を自然に尊重してくれること',
+        pain:'「なんで1人でいるの?」という詮索や、過度な束縛' }
+  },
+  { cat:'💼 仕事の優先度', q:'パートナーが急に仕事でデートをキャンセル。どう思う？',
+    A:{ main:'仕事なら仕方ない、次の機会に', sub:'仕事への理解を大切にする派',
+        happy:'仕事を頑張っている姿を応援できること',
+        pain:'仕事を理由にした頻繁なキャンセル、約束を軽視する態度' },
+    B:{ main:'約束を優先してほしかった', sub:'パートナーを最優先にしたい派',
+        happy:'いつも自分を一番に考えてくれていると感じること',
+        pain:'仕事を口実に、関係を何度も後回しにされること' }
+  },
+  { cat:'🤝 協力のスタンス', q:'日常の家事や手伝いについて、自分に近いのは？',
+    A:{ main:'気づいたらなんでも手伝いたい', sub:'助け合いを自然にしたい派',
+        happy:'気づいたら手を貸してくれること、「一緒にやろう」が自然に出てくること',
+        pain:'すべて自分任せで、困っていても一切動かないこと' },
+    B:{ main:'担当を決めて、それぞれがやる', sub:'自立分担でスッキリしたい派',
+        happy:'自分の担当をきちんとこなしてくれること、余計な干渉がないこと',
+        pain:'担当をやらずに相手任せにして責任逃れをすること' }
+  },
+  { cat:'💬 コミュニケーション', q:'悩みを話したとき、相手にしてほしいのは？',
+    A:{ main:'まず「大変だったね」と共感してほしい', sub:'感情を受け取ってほしい派',
+        happy:'「それは辛かったね」と感情をそのまま受け取ってくれること',
+        pain:'話を途中で遮り、すぐ解決策を言うこと。「で、どうしたいの?」という反応' },
+    B:{ main:'どうすればいいか一緒に考えたい', sub:'具体的に解決したい派',
+        happy:'具体的なアドバイスや解決策を一緒に考えてくれること',
+        pain:'感情論だけで話が終わり、何も前に進まないこと' }
+  },
+  { cat:'💰 お金の価値観', q:'お金の使い方で、自分に近いのは？',
+    A:{ main:'将来のためにコツコツ貯める派', sub:'堅実に備えたい派',
+        happy:'将来を見据えた堅実な金銭感覚を持っていること',
+        pain:'「何とかなる」と無計画に使い続け、将来への備えが全くないこと' },
+    B:{ main:'今を楽しむためにしっかり使う派', sub:'今この瞬間を大切にしたい派',
+        happy:'一緒に今を楽しむことに積極的でいてくれること',
+        pain:'「勿体ない」「節約しろ」と、楽しみや体験を全否定されること' }
+  },
+  { cat:'🗺️ 将来・人生設計', q:'2人の将来について、どちらに近い？',
+    A:{ main:'具体的な計画を立てて一緒に実行したい', sub:'将来の設計を共有したい派',
+        happy:'将来の計画を一緒に立て、ロードマップを共有できること',
+        pain:'「その時はその時」と将来の話を一切しないこと、先の見えない関係' },
+    B:{ main:'流れを見ながらその都度話し合いたい', sub:'自然に流れていきたい派',
+        happy:'今の関係を大切にしながら、自然に未来が開けていく感覚',
+        pain:'細かく計画を決めすぎて、自由度や柔軟性が全くなくなること' }
+  }
 ];
 
-const CAT_COLORS = {
-  1: 'linear-gradient(145deg,#B06A40 0%,#7A3E1E 100%)',
-  2: 'linear-gradient(145deg,#3E5E80 0%,#254468 100%)',
-  3: 'linear-gradient(145deg,#2E6E58 0%,#164838 100%)',
-  4: 'linear-gradient(145deg,#6A4E8C 0%,#4A2E6C 100%)',
-  5: 'linear-gradient(145deg,#7A6030 0%,#5A4010 100%)',
-  6: 'linear-gradient(145deg,#2E5438 0%,#163820 100%)',
+/* ── 8 ARCHETYPES (Q1+Q4+Q6) ── */
+const ARCHETYPES = {
+  AAA:{ name:'二人の地図を描く共感者', icon:'🗺️',
+        catch:'そばで感じ合い、二人で未来を設計していく。それが私の愛のかたち。',
+        guide:'感情をまず受け取り、その上で将来の話を具体的に一緒に進めましょう。「そっか、それは辛かったね。じゃあどうしていこうか?」という流れが理想。一緒にいる時間を計画の中に組み込んで。' },
+  AAB:{ name:'そばで感じ合う自然体', icon:'🌊',
+        catch:'そばで感じ合いながら、流れにそって自然に生きていく。',
+        guide:'感情をまず受け取り、あとは流れにまかせましょう。「そっか、辛かったね」で十分なことも多い。難しく考えず、今ここに一緒にいることを大切に。' },
+  ABA:{ name:'課題を共に解く設計者', icon:'🔧',
+        catch:'一緒にいて、問題は一緒に解く。シンプルだけど、それが心地いい。',
+        guide:'一緒にいる時間を確保しつつ、問題は具体的に解決策を出し合って。「一緒に考えよう」という姿勢が、この人には一番伝わります。' },
+  ABB:{ name:'一緒にいながら答えを見つける人', icon:'🧩',
+        catch:'答えを急がなくていい。一緒にいながら、自然に道が見えてくる。',
+        guide:'答えを急がなくていい。一緒にいながら自然にアイデアを出し合うスタイルが合っています。「どうしようか」と投げかけるだけで十分。' },
+  BAA:{ name:'自立しながら未来を描く共感者', icon:'⭐',
+        catch:'お互いの時間を大切にしながら、気持ちで深くつながり、未来を描いていく。',
+        guide:'お互いの時間を尊重しながら、時間を作って将来の話を。「月に一回くらい将来の話をしよう」という提案がちょうどいい。感情を先に受け取ることを忘れずに。' },
+  BAB:{ name:'心の自由な共感者', icon:'🦋',
+        catch:'自分らしく生きながら、感じ合える関係でいたい。',
+        guide:'自由に感じ合える関係が理想。決め込まずに、「最近どう思う?」と感情を共有し合う時間を大切に。先のことより今の気持ちを。' },
+  BBA:{ name:'独立した設計実行者', icon:'🏗️',
+        catch:'自分のスタイルを保ちながら、確実に未来を形にしていく。',
+        guide:'お互いのペースを保ちながら、計画は着実に。「それぞれ考えてきて、次に話し合おう」という進め方がこの人には合っています。' },
+  BBB:{ name:'自由な自立実務家', icon:'🌏',
+        catch:'自分の軸を持ちながら、お互いを尊重して自由に生きる。',
+        guide:'お互いの自由を尊重しながら、必要なときだけ話し合う。深刻にならずに「まあなんとかなるか」というスタンスで。でも大事なことは後回しにしない姿勢を。' },
 };
 
-/* ── CHARACTER DATA ── */
-const BASES = {
-  "1-2":{ name:"ともに生きるビジョナリー", icon:"⏰", catch:"一緒にいながら、お互いの仕事も尊重できる関係が理想。",
-    happy:"帰宅後に「今日どうだった?」と聞いてもらえること。忙しくても週末は一緒に過ごしてくれること。仕事の頑張りをそばで見守ってくれている実感があること。",
-    guide:"「今日は仕事が長くなるけど、帰ったら一緒に夕飯食べよう」の一言が最高の愛情表現。仕事への理解 × 一緒にいる時間の確保、この両立がすべてです。" },
-  "1-3":{ name:"ともに暮らす人", icon:"⏰", catch:"そばにいて、自然に助け合える。それが私の安心のかたち。",
-    happy:"気づいたら手を貸してくれること。「何か手伝おうか?」が自然に出てくること。家のことを一緒に分担している感覚があること。",
-    guide:"一緒にいる時間に自然なサポートを見せることがすべて。「頼んでないのにやってくれた」という体験が、深い安心感につながります。" },
-  "1-4":{ name:"ぬくもりシェアラー", icon:"⏰", catch:"一緒にいて、気持ちが通じ合えれば、それだけでいい。",
-    happy:"話を最後まで聞いてもらえること。「それ大変だったね」と感情に寄り添ってもらえること。特別な日でなくても、ただそばにいてくれること。",
-    guide:"まず感情を受け取ることが最優先。解決策より「そっか、それはつらかったね」が100倍効きます。一緒にいる時間に感情的なつながりを。" },
-  "1-5":{ name:"安心の同居人", icon:"⏰", catch:"一緒にいながら、将来も安心できる。それが私の幸せの形。",
-    happy:"将来のお金のことを一緒に考えてくれること。無駄遣いをせず、着実に生活を築いてくれること。「ずっとここにいるよ」という安定感があること。",
-    guide:"一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」が愛情に聞こえます。" },
-  "1-6":{ name:"二人三脚の設計者", icon:"⏰", catch:"一緒に未来を描いていくことが、私にとっての愛のかたち。",
-    happy:"「5年後、どうしたい?」という話を一緒にしてくれること。将来の計画を共に立て、そこに向かって歩んでいる実感があること。",
-    guide:"未来の話を具体的に一緒にすることが大切。「来年どこ行こうか」「将来こうしたいんだけど、どう思う?」という会話が愛情表現になります。" },
-
-  "2-1":{ name:"一途なプロフェッショナル", icon:"💼", catch:"仕事は全力で。でもあなたのことも、ちゃんと見ている。",
-    happy:"仕事が忙しいときでも文句を言わずに待ってくれること。仕事終わりに「お疲れ様」と言ってくれること。仕事の話を嬉しそうに聞いてくれること。",
-    guide:"仕事への理解と応援が愛情の証明になります。「頑張ってるね」の一言と、一緒にいる時間を大切にする姿勢の組み合わせが最強です。" },
-  "2-3":{ name:"縁の下のプロ", icon:"💼", catch:"仕事も大事。でも、あなたへのサポートも絶対に欠かさない。",
-    happy:"仕事が忙しくても、困っているときは手を差し伸べてくれること。仕事の大変さをわかった上で、できる範囲でサポートしてくれること。",
-    guide:"仕事と協力の両方を認めることが大切。「忙しいのに手伝ってくれてありがとう」という感謝の言葉が、この人の心に一番響きます。" },
-  "2-4":{ name:"感情を持つキャリア人", icon:"💼", catch:"仕事の話も、気持ちの話も、全部共有したい。",
-    happy:"仕事の成功を一緒に喜んでくれること。愚痴を聞いてくれること。「よく頑張ったね」と認めてくれること。",
-    guide:"仕事の感情面に寄り添うことが鍵。「それは大変だったね」「よく頑張ったね」という共感の言葉を、仕事の話のあとに必ずセットで。" },
-  "2-5":{ name:"堅実なキャリアビルダー", icon:"💼", catch:"仕事で稼いで、将来を安定させる。それが私の愛情表現。",
-    happy:"お金の管理をきちんとしてくれること。仕事への理解があり、将来の安定を一緒に目指している感覚があること。",
-    guide:"仕事とお金の安定を一緒に築いていく姿勢を見せることが大切。「将来のためにここは節約しよう」という提案が愛情として伝わります。" },
-  "2-6":{ name:"未来設計のプロフェッショナル", icon:"💼", catch:"仕事で積み上げた力で、描いた未来を実現していく。",
-    happy:"キャリアと人生設計を連動して考えてくれること。仕事の方向性を応援してくれること。長期的な視野で物事を考えてくれること。",
-    guide:"仕事のビジョンと将来の計画を連動させた会話が響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口。" },
-
-  "3-1":{ name:"そばにいる手", icon:"🤝", catch:"なんでも手伝う。そして、一緒にいる時間が私の喜び。",
-    happy:"一緒に家事をしてくれること。困っていたら気づいてくれること。何もしていないただの時間も、一緒にいてくれること。",
-    guide:"日常の小さな手助けと、ただ一緒にいる時間を大切にすることが最大の愛情です。「一緒にやろう」という言葉が魔法になります。" },
-  "3-2":{ name:"プロを支える人", icon:"🤝", catch:"あなたの仕事を応援しながら、できる限り支えていきたい。",
-    happy:"忙しい中でも手伝ってくれること。仕事を頑張っている姿を見ながらも、サポートを忘れないこと。",
-    guide:"仕事への協力と感謝のセットが有効。「忙しいのに手伝ってくれてありがとう。本当に助かってる」という言葉が、この人の動力になります。" },
-  "3-4":{ name:"心と手で支える人", icon:"🤝", catch:"行動で支えて、言葉でも寄り添う。それが私の愛し方。",
-    happy:"話を聞きながら、実際に手も動かしてくれること。「大丈夫?」の言葉と共に助けてくれること。",
-    guide:"共感の言葉 + 具体的な行動のセットが最強。「それは辛かったね。じゃあ一緒にやろう」という流れが理想です。" },
-  "3-5":{ name:"堅実なサポーター", icon:"🤝", catch:"手伝うことと、将来の安心。どちらも大切にしていきたい。",
-    happy:"日常のサポートをしてくれながら、将来の備えも一緒に考えてくれること。堅実に生活を支えてくれること。",
-    guide:"日常の協力と将来の計画を並行して見せることが大切。「今日も手伝うね。あと来月の家計、一緒に見直そう」という提案が愛情になります。" },
-  "3-6":{ name:"先を見据えたサポーター", icon:"🤝", catch:"今日の支えが、明日の計画につながっている。",
-    happy:"将来を見据えながら手伝ってくれること。「これをしておけば後で楽になるよ」と先読みしてサポートしてくれること。",
-    guide:"サポートを未来への投資として語ることが響きます。「今こうしておけば後が楽だから、一緒にやろう」という視点が愛情として伝わります。" },
-
-  "4-1":{ name:"ぬくもりの共鳴者", icon:"💬", catch:"気持ちを分かち合いながら、一緒にいることが私の幸せ。",
-    happy:"話を最後まで聞きながら、一緒にいてくれること。何もしなくても、そばにいてくれる安心感。感情を否定せず受け取ってくれること。",
-    guide:"感情を受け取りながら一緒にいる時間を作ることが最優先。「今日は何もしなくていいから、ただ一緒にいよう」という提案が最大の愛情です。" },
-  "4-2":{ name:"感情を持つプロフェッショナル", icon:"💬", catch:"仕事への情熱と、気持ちを大切にする心。どちらも私の一部。",
-    happy:"仕事の話を感情ごと聞いてくれること。「大変だったね」と言いながら、仕事も応援してくれること。",
-    guide:"仕事の話に感情的な共感を加えることが大切。成果より「それは頑張ったね」という感情への返しが先。その後で仕事の話をすると伝わります。" },
-  "4-3":{ name:"共感する行動派", icon:"💬", catch:"気持ちに寄り添いながら、行動でも支えたい。",
-    happy:"話を聞いてくれて、実際に手伝ってもくれること。「わかるよ」と言いながら一緒に動いてくれること。",
-    guide:"共感の言葉と具体的な手助けのセットが効果的。「そっか、大変だったね。じゃあ私が◯◯やるよ」という流れがこの人の心に刺さります。" },
-  "4-5":{ name:"感情の安全基地", icon:"💬", catch:"気持ちの安心と、生活の安定。両方あってこそ、幸せを感じられる。",
-    happy:"感情を受け止めてくれながら、将来の安心も一緒に考えてくれること。感情的サポートと経済的安定の両立をしてくれること。",
-    guide:"感情的サポートと安定の両立を見せることが鍵。まず共感して、安心させてから将来の話をする順番を守りましょう。" },
-  "4-6":{ name:"感情で未来を彩る人", icon:"💬", catch:"気持ちを大切にしながら、一緒に未来を描いていきたい。",
-    happy:"将来の話を感情豊かにしてくれること。「これ楽しそう!」「こうなったらいいね」という温度のある計画を一緒に立ててくれること。",
-    guide:"未来の話を感情の温度を持って語ることが大切。「将来こうなりたいんだけど、どう思う?」という感情を乗せた問いかけが、この人との会話を豊かにします。" },
-
-  "5-1":{ name:"安心をつくる同居人", icon:"💰", catch:"堅実な生活の中で、一緒にいる時間を積み重ねていく。",
-    happy:"一緒にいながら、将来の安心を一緒に作ってくれること。無駄遣いをしないこと。コツコツ貯めている姿勢があること。",
-    guide:"一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」という言葉が愛情に聞こえます。" },
-  "5-2":{ name:"堅実なキャリアパートナー", icon:"💰", catch:"仕事で稼ぎ、しっかり管理する。それが私の愛情表現。",
-    happy:"仕事も頑張りながら、お金の管理もきちんとしてくれること。将来の経済的安定を一緒に目指してくれること。",
-    guide:"仕事への取り組みと財務管理の姿勢を見せることが愛情の証明。「今月どのくらい使ったか確認しよう」という提案が信頼感につながります。" },
-  "5-3":{ name:"実務の守り人", icon:"💰", catch:"手伝い合いながら、着実に将来を積み上げていく。",
-    happy:"日常の協力をしてくれながら、財務面でも堅実でいてくれること。一緒に節約を楽しんでくれること。",
-    guide:"協力と節約をセットにして見せることが効果的。「一緒に料理しながら外食費も減らそう」という具体的な提案がこの人の心をつかみます。" },
-  "5-4":{ name:"安心できる聞き手", icon:"💰", catch:"しっかりした基盤があるから、心から気持ちを話せる。",
-    happy:"お金の心配がない安心感の中で、感情的な話もしっかり聞いてくれること。感情的にも財務的にも安心させてくれること。",
-    guide:"安定と共感の両方を提供することが大切。まず「お金のことは心配しなくていい」という安心感を作り、その上で感情的なサポートをすると信頼が深まります。" },
-  "5-6":{ name:"人生設計の実務家", icon:"💰", catch:"しっかりした計画と、堅実なお金の管理。それが幸せへの道。",
-    happy:"将来の計画を具体的な数字とともに立ててくれること。「老後のためにこれだけ貯めよう」という具体的な計画があること。",
-    guide:"計画とお金を連動させた会話が響きます。「10年後にはこうしたい。そのためには毎月◯万円貯めよう」という具体的なロードマップを一緒に作りましょう。" },
-
-  "6-1":{ name:"未来へ共に歩む人", icon:"🗺️", catch:"一緒に将来を描きながら、今も一緒にいたい。",
-    happy:"将来の話を一緒にしながら、今日も一緒に過ごしてくれること。「老後、どこに住もうか」なんて話を笑いながらできる関係。",
-    guide:"未来の話と今日の時間の両方を大切にすることが鍵。「今日も一緒にいながら、将来の話もしよう」という自然なつながりを意識して。" },
-  "6-2":{ name:"ビジョナリーワーカー", icon:"🗺️", catch:"仕事のキャリアと人生の計画は、セットで考えていきたい。",
-    happy:"キャリアと人生設計を連動して考えてくれること。仕事の方向性を応援してくれること。長期的な視野で物事を考えてくれること。",
-    guide:"仕事の話を長期ビジョンと結びつけて語ることが響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口になります。" },
-  "6-3":{ name:"計画的なサポーター", icon:"🗺️", catch:"先を見越して支える。それが私の愛し方。",
-    happy:"将来を考えた上で手伝ってくれること。「後で楽になるように今やっておこう」と先読みしてサポートしてくれること。",
-    guide:"サポートを未来への投資として見せることが大切。「将来の◯◯のために、今からこれをやっておこう」という提案が愛情として伝わります。" },
-  "6-4":{ name:"感情で未来を描く人", icon:"🗺️", catch:"将来の夢を、気持ちを込めて一緒に語り合いたい。",
-    happy:"将来の話を感情豊かにしてくれること。「これ楽しそう!やろうよ」という温度感で計画を立ててくれること。",
-    guide:"未来の計画を感情の言葉で語ることが大切。「こうなったら楽しいね」「あそこに行きたいね」という感情を乗せた未来の話が、この人の心に火をつけます。" },
-  "6-5":{ name:"人生設計のパートナー", icon:"🗺️", catch:"しっかりとした計画と、それを支えるお金の管理。人生は設計してこそ。",
-    happy:"将来の計画を具体的に立ててくれること。お金の計画も含めた現実的なロードマップがあること。",
-    guide:"計画と財務管理をセットで語ることが最も響きます。「5年後にはこうしたい。そのためのお金の計画を一緒に立てよう」という具体的な対話を大切に。" },
+/* ── 8 SUBTYPES (Q2+Q3+Q5) ── */
+const SUBTYPES = {
+  AAA:'堅実な縁の下派',
+  AAB:'仕事も楽しみも大事派',
+  ABA:'キャリア重視・堅実独立派',
+  ABB:'キャリア重視・享楽独立派',
+  BAA:'愛情深い・堅実サポート派',
+  BAB:'愛情深い・楽しい助け合い派',
+  BBA:'献身的・堅実独立派',
+  BBB:'献身的・享楽自立派',
 };
 
-const LANDMINES = {
-  1:'「一緒にいる時間」を完全に後回しにされること。連絡もまばら、いつも別行動、共に過ごす時間が最低限な関係は耐えられない。',
-  2:'仕事への理解が全くないこと。頑張りを認めず、繁忙期にも配慮なく割り込んでくること。',
-  3:'困っていても完全に素知らぬ顔。何も手伝わず、サポートしようとする気配が一切感じられないこと。',
-  4:'感情を全部論理で返されること。話を途中で遮って解決策だけ言う、「で、何が言いたいの?」という反応。',
-  5:'お金を無計画に使い続けること。「何とかなる」という根拠のない楽観で、将来のお金を真剣に考えない姿勢。',
-  6:'将来の話を完全に避けること。「その時はその時」「考えすぎ」と言われ、一切の計画や展望を共有しない生き方。',
+/* ── HEAD COLORS (Q1+Q4) ── */
+const HEAD_COLORS = {
+  AA:'linear-gradient(145deg,#B06040 0%,#782A10 100%)',
+  AB:'linear-gradient(145deg,#3A5878 0%,#1A3858 100%)',
+  BA:'linear-gradient(145deg,#2E6A50 0%,#104A30 100%)',
+  BB:'linear-gradient(145deg,#383845 0%,#181825 100%)',
 };
-
-/* ── PATTERN NUMBER (1〜120) ── */
-const PATTERN_NUM = {};
-let _n = 0;
-for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) for(let c=1;c<=6;c++) {
-  if(a!==b && a!==c && b!==c) PATTERN_NUM[`${a}-${b}-${c}`] = ++_n;
-}
 
 /* ── STATE ── */
-let sel = [0,0,0];
-let _curChar = null;
+let answers = [];
+let curQ = 0;
+let _char = null;
 
 /* ── HELPERS ── */
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   requestAnimationFrame(()=>{ document.getElementById(id).classList.add('active'); window.scrollTo({top:0}); });
 }
-function buildButtons(containerId, ids, onClick) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = '';
-  ids.forEach((id,i)=>{
-    const c = CATS[id];
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.style.animationDelay = i*55+'ms';
-    btn.innerHTML = `<span class="cat-em">${c.emoji}</span><div class="cat-info"><div class="cat-nm">${c.name}</div><div class="cat-hn">${c.hint}</div></div><span class="cat-arr">›</span>`;
-    btn.onclick = ()=>onClick(id);
-    el.appendChild(btn);
-  });
+
+function patternNum(ans) {
+  return parseInt(ans.map(a=>a==='A'?'0':'1').join(''),2)+1;
 }
 
 /* ── FLOW ── */
-function startDiag() { sel=[0,0,0]; buildButtons('list1',[1,2,3,4,5,6],pickTop1); showScreen('s-step1'); }
-function goIntro() { showScreen('s-intro'); }
-function goStep1() { buildButtons('list1',[1,2,3,4,5,6],pickTop1); showScreen('s-step1'); }
-function goStep2() { buildButtons('list2',[1,2,3,4,5,6].filter(x=>x!==sel[0]),pickTop2); showScreen('s-step2'); }
+function startDiag() { answers=[]; curQ=0; renderQ(); showScreen('s-q'); }
+function restart() { startDiag(); }
 
-function pickTop1(id) { sel[0]=id; buildButtons('list2',[1,2,3,4,5,6].filter(x=>x!==id),pickTop2); showScreen('s-step2'); }
-function pickTop2(id) { sel[1]=id; buildButtons('list3',[1,2,3,4,5,6].filter(x=>x!==sel[0]&&x!==id),pickBottom); showScreen('s-step3'); }
-function pickBottom(id) { sel[2]=id; showResult(); }
+function renderQ() {
+  const q = Qs[curQ];
+  const pct = Math.round((curQ/6)*100);
+  document.getElementById('q-prog').style.width = pct+'%';
+  document.getElementById('q-cat-lbl').textContent = q.cat;
+  document.getElementById('q-step-n').textContent = (curQ+1)+' / 6';
+  document.getElementById('q-text').textContent = q.q;
 
-function showResult() {
-  const [t1,t2,bot] = sel;
-  const base = BASES[`${t1}-${t2}`];
-  if(!base) return;
-  _curChar = { ...base, landmine: LANDMINES[bot], t1, t2, bot };
+  const opts = document.getElementById('q-opts');
+  opts.innerHTML = '';
+  ['A','B'].forEach((key,i)=>{
+    const o = q[key];
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.style.animationDelay = i*80+'ms';
+    btn.innerHTML = `<span class="opt-main">${o.main}</span><span class="opt-sub">${o.sub}</span>`;
+    btn.onclick = ()=>selectOpt(key, btn);
+    opts.appendChild(btn);
+  });
+}
 
-  document.getElementById('r-head').style.background = CAT_COLORS[t1];
-  document.getElementById('r-icon').textContent = base.icon;
-  document.getElementById('r-num').textContent = `No.${PATTERN_NUM[`${t1}-${t2}-${bot}`]} / 120`;
-  document.getElementById('r-name').textContent = base.name;
-  document.getElementById('r-catch').textContent = base.catch;
-  document.getElementById('r-happy').textContent = base.happy;
-  document.getElementById('r-land').textContent = LANDMINES[bot];
-  document.getElementById('r-guide').textContent = base.guide;
+function selectOpt(key, btn) {
+  btn.classList.add('selected');
+  answers[curQ] = key;
+  setTimeout(()=>{
+    curQ++;
+    if(curQ < 6) { renderQ(); }
+    else { showLoading(); }
+  }, 280);
+}
+
+function goBack() {
+  if(curQ === 0) { showScreen('s-intro'); return; }
+  curQ--;
+  answers.pop();
+  renderQ();
+}
+
+function showLoading() {
+  showScreen('s-load');
+  requestAnimationFrame(()=>{
+    document.getElementById('load-fill').style.width = '100%';
+  });
+  setTimeout(()=>{ buildAndShowResult(); }, 1600);
+}
+
+function buildAndShowResult() {
+  const ans = answers;
+  const archKey = ans[0]+ans[3]+ans[5];  // Q1+Q4+Q6
+  const subKey  = ans[1]+ans[2]+ans[4];  // Q2+Q3+Q5
+  const arch    = ARCHETYPES[archKey];
+  const subName = SUBTYPES[subKey];
+  const color   = HEAD_COLORS[ans[0]+ans[3]]; // Q1+Q4
+  const num     = patternNum(ans);
+
+  const happy = [
+    Qs[0][ans[0]].happy,
+    Qs[2][ans[2]].happy,
+    Qs[3][ans[3]].happy,
+  ].join('。') + 'こと。';
+
+  const land = [
+    Qs[3][ans[3]].pain,
+    Qs[0][ans[0]].pain,
+    Qs[4][ans[4]].pain,
+  ].join('。また、') + 'こと。';
+
+  _char = { arch, subName, num, happy, land, ans };
+
+  document.getElementById('rhead').style.background = color;
+  document.getElementById('r-icon').textContent = arch.icon;
+  document.getElementById('r-num').textContent = 'No.'+num+' / 64';
+  document.getElementById('r-name').textContent = arch.name;
+  document.getElementById('r-catch').textContent = arch.catch;
+  document.getElementById('r-happy').textContent = happy;
+  document.getElementById('r-land').textContent = land;
+  document.getElementById('r-guide').textContent = arch.guide;
 
   const tags = document.getElementById('r-tags');
-  tags.innerHTML = `
-    <span class="rh-tag t1">1位 ${CATS[t1].emoji} ${CATS[t1].name}</span>
-    <span class="rh-tag">2位 ${CATS[t2].emoji} ${CATS[t2].name}</span>
-    <span class="rh-tag">地雷 ${CATS[bot].emoji} ${CATS[bot].name}</span>
-  `;
+  tags.innerHTML = `<span class="rhead-tag sub">${subName}</span>`;
+
+  const allAns = document.getElementById('r-all-ans');
+  allAns.innerHTML = ans.map((a,i)=>`<span class="ans-chip">${Qs[i][a].sub}</span>`).join('');
 
   const btn = document.getElementById('btn-copy');
   btn.textContent = '📋 結果をコピーしてLINEで共有';
-  btn.classList.remove('copied');
+  btn.classList.remove('ok');
+
+  if(configured) sbFetch('blueprint_results',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({pattern:`${ans.join('')}`,num,archetype:archKey,subtype:subKey})}).catch(()=>{});
 
   showScreen('s-result');
-  if(configured) sbFetch('blueprint_results',{ method:'POST', headers:{'Prefer':'return=minimal'}, body:JSON.stringify({top1:t1,top2:t2,bottom:bot,pattern:`${t1}-${t2}-${bot}`}) }).catch(()=>{});
 }
 
 function copyResult() {
-  if(!_curChar) return;
-  const {t1,t2,bot,name,catch:cat,happy,landmine} = _curChar;
-  const text = [
+  if(!_char) return;
+  const { arch, subName, num, happy, land, ans } = _char;
+  const txt = [
     '【プロジェクト・ブループリント診断】',
     '',
-    `✨ ${name}`,
-    `No.${PATTERN_NUM[`${t1}-${t2}-${bot}`]} / 120`,
+    `✨ ${arch.name}`,
+    `${subName}（No.${num} / 64）`,
     '',
-    `「${cat}」`,
+    `「${arch.catch}」`,
     '',
-    `🌟 喜ぶポイント`,
+    '🌟 喜ぶポイント',
     happy,
     '',
-    `⚡ 地雷ポイント`,
-    landmine,
+    '⚡ 地雷ポイント',
+    land,
     '',
-    `▶ あなたも診断してみて`,
+    '▶ あなたも試してみて',
     'https://kantei-app-gamma.vercel.app/blueprint/',
   ].join('\n');
 
-  navigator.clipboard.writeText(text).then(()=>{
+  navigator.clipboard.writeText(txt).then(()=>{
     const btn = document.getElementById('btn-copy');
     btn.textContent = '✓ コピーしました！LINEに貼り付けて';
-    btn.classList.add('copied');
-    setTimeout(()=>{ btn.textContent='📋 結果をコピーしてLINEで共有'; btn.classList.remove('copied'); }, 3000);
+    btn.classList.add('ok');
+    setTimeout(()=>{ btn.textContent='📋 結果をコピーしてLINEで共有'; btn.classList.remove('ok'); },3000);
   }).catch(()=>alert('コピーできませんでした。手動でコピーしてください。'));
 }
-
-function restart() { startDiag(); }
 </script>
 </body>
 </html>
