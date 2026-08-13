@@ -7,7 +7,7 @@ const replacements = {
   '__ADMIN_PASSWORD__': process.env.ADMIN_PASSWORD || 'kantei2024',
 };
 
-const targets = ['index.html', 'admin/index.html'];
+const targets = ['index.html', 'admin/index.html', 'blueprint/index.html'];
 
 targets.forEach(file => {
   const fullPath = path.join(__dirname, file);
