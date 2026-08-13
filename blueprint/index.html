@@ -3,277 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>プロジェクト・ブループリント | 64タイプ関係性診断</title>
+  <title>プロジェクト・ブループリント | 関係性タイプ診断</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#EAE5DB; --ink:#1A1714; --ink-mid:#5A544E; --ink-light:#9B958E; --white:#FDFAF5; }
-    *,*::before,*::after { margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
-    html { -webkit-font-smoothing:antialiased; }
-    body { min-height:100svh;background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px 16px 48px; }
-    body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0; }
+    :root { --bg:#EAE5DB;--ink:#1A1714;--mid:#5A544E;--light:#9B958E;--white:#FDFAF5; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{-webkit-font-smoothing:antialiased}
+    body{min-height:100svh;background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px 16px 48px}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
-    .screen { display:none;width:100%;max-width:440px;z-index:1;position:relative; }
-    .screen.active { display:block;animation:up .5s cubic-bezier(.22,1,.36,1) both; }
-    @keyframes up { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none} }
+    .screen{display:none;width:100%;max-width:440px;z-index:1;position:relative}
+    .screen.active{display:block;animation:up .5s cubic-bezier(.22,1,.36,1) both}
+    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
     /* INTRO */
-    .intro-wrap { background:var(--white);border-radius:28px;overflow:hidden;box-shadow:0 12px 48px rgba(26,23,20,.15); }
-    .intro-top { background:#1A1714;padding:48px 32px 40px;position:relative;overflow:hidden; }
-    .intro-top::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(176,96,64,.28) 0%,transparent 60%),radial-gradient(ellipse at 15% 85%,rgba(62,90,120,.22) 0%,transparent 55%); }
-    .intro-tag { position:relative;z-index:1;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:28px; }
-    .intro-h { position:relative;z-index:1;font-family:'Shippori Mincho',serif;font-size:34px;font-weight:800;line-height:1.28;color:#fff;letter-spacing:-.01em;margin-bottom:18px; }
-    .intro-h em { font-style:normal;color:rgba(255,255,255,.45);font-size:22px;font-weight:400; }
-    .intro-sub { position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.6);line-height:1.85; }
-    .intro-stats { display:flex;border-top:1px solid rgba(255,255,255,.09);margin-top:34px;padding-top:26px;position:relative;z-index:1; }
-    .stat { flex:1;text-align:center; }
-    .stat-n { font-family:'Shippori Mincho',serif;font-size:26px;font-weight:700;color:#fff;display:block; }
-    .stat-l { font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.38);display:block;margin-top:2px; }
-    .stat-sep { width:1px;background:rgba(255,255,255,.1); }
-    .intro-bot { padding:28px 32px 32px; }
-    .intro-pts { list-style:none;margin-bottom:26px;display:flex;flex-direction:column;gap:10px; }
-    .intro-pts li { font-size:13px;color:var(--ink-mid);line-height:1.65;display:flex;align-items:flex-start;gap:10px; }
-    .intro-pts li::before { content:'—';color:var(--ink-light);flex-shrink:0; }
-    .btn-start { width:100%;padding:20px;background:#1A1714;color:#fff;border:none;border-radius:18px;font-family:'Shippori Mincho',serif;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:all .2s ease;box-shadow:0 4px 20px rgba(26,23,20,.3); }
-    .btn-start:hover { background:#2E2925;transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,23,20,.35); }
-    .btn-start:active { transform:scale(.98); }
+    .intro{background:var(--white);border-radius:28px;overflow:hidden;box-shadow:0 12px 48px rgba(26,23,20,.15)}
+    .itop{background:#1A1714;padding:48px 32px 40px;position:relative;overflow:hidden}
+    .itop::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(176,96,64,.3) 0%,transparent 60%),radial-gradient(ellipse at 15% 85%,rgba(62,90,120,.2) 0%,transparent 55%)}
+    .itag{position:relative;z-index:1;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:28px}
+    .ih{position:relative;z-index:1;font-family:'Shippori Mincho',serif;font-size:34px;font-weight:800;line-height:1.28;color:#fff;letter-spacing:-.01em;margin-bottom:18px}
+    .ih em{font-style:normal;color:rgba(255,255,255,.42);font-size:22px;font-weight:400}
+    .isub{position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,.58);line-height:1.85}
+    .istats{display:flex;border-top:1px solid rgba(255,255,255,.09);margin-top:34px;padding-top:26px;position:relative;z-index:1}
+    .stat{flex:1;text-align:center}
+    .sn{font-family:'Shippori Mincho',serif;font-size:26px;font-weight:700;color:#fff;display:block}
+    .sl{font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.36);display:block;margin-top:2px}
+    .ssep{width:1px;background:rgba(255,255,255,.1)}
+    .ibot{padding:28px 32px 32px}
+    .ipts{list-style:none;margin-bottom:26px;display:flex;flex-direction:column;gap:10px}
+    .ipts li{font-size:13px;color:var(--mid);line-height:1.65;display:flex;align-items:flex-start;gap:10px}
+    .ipts li::before{content:'—';color:var(--light);flex-shrink:0}
+    .btn-start{width:100%;padding:20px;background:#1A1714;color:#fff;border:none;border-radius:18px;font-family:'Shippori Mincho',serif;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:all .2s;box-shadow:0 4px 20px rgba(26,23,20,.3)}
+    .btn-start:hover{background:#2E2925;transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,23,20,.35)}
+    .btn-start:active{transform:scale(.98)}
 
     /* QUESTION */
-    .q-card { background:var(--white);border-radius:28px;padding:32px 28px 24px;box-shadow:0 8px 36px rgba(26,23,20,.11); }
-    .q-prog-wrap { height:3px;background:rgba(26,23,20,.1);border-radius:2px;margin-bottom:32px;overflow:hidden; }
-    .q-prog-fill { height:100%;background:var(--ink);border-radius:2px;transition:width .4s cubic-bezier(.22,1,.36,1); }
-    .q-meta { display:flex;justify-content:space-between;align-items:center;margin-bottom:10px; }
-    .q-cat-lbl { font-size:11px;letter-spacing:.14em;color:var(--ink-light); }
-    .q-step-n { font-size:11px;color:var(--ink-light); }
-    .q-text { font-family:'Shippori Mincho',serif;font-size:20px;font-weight:700;line-height:1.6;color:var(--ink);margin-bottom:24px; }
-    .q-opts { display:flex;flex-direction:column;gap:10px; }
-    .opt-btn { width:100%;padding:20px 20px;background:rgba(26,23,20,.04);border:1.5px solid transparent;border-radius:16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:5px;transition:all .18s cubic-bezier(.22,1,.36,1);animation:fadein .4s ease both; }
-    .opt-btn:hover { background:rgba(26,23,20,.08);border-color:rgba(26,23,20,.14);transform:translateX(3px); }
-    .opt-btn:active { transform:scale(.98); }
-    .opt-btn.selected { background:var(--ink);border-color:var(--ink);transform:scale(.98); }
-    .opt-btn.selected .opt-main,.opt-btn.selected .opt-sub { color:#fff; }
-    @keyframes fadein { from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none} }
-    .opt-main { font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.5; }
-    .opt-sub { font-size:11px;color:var(--ink-light);line-height:1.4; }
-    .btn-back { margin-top:14px;width:100%;padding:10px;background:transparent;border:none;font-size:12px;color:var(--ink-light);cursor:pointer;border-radius:10px;transition:all .15s; }
-    .btn-back:hover { color:var(--ink);background:rgba(26,23,20,.05); }
+    .qcard{background:var(--white);border-radius:28px;padding:32px 28px 24px;box-shadow:0 8px 36px rgba(26,23,20,.11)}
+    .qprog{height:3px;background:rgba(26,23,20,.1);border-radius:2px;margin-bottom:30px;overflow:hidden}
+    .qfill{height:100%;background:var(--ink);border-radius:2px;transition:width .4s cubic-bezier(.22,1,.36,1)}
+    .qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .qaxis{font-size:11px;color:var(--light);letter-spacing:.1em}
+    .qnum{font-size:11px;color:var(--light)}
+    .qtxt{font-family:'Shippori Mincho',serif;font-size:19px;font-weight:700;line-height:1.65;color:var(--ink);margin-bottom:22px}
+    .qopts{display:flex;flex-direction:column;gap:10px}
+    .obtn{width:100%;padding:19px 20px;background:rgba(26,23,20,.04);border:1.5px solid transparent;border-radius:16px;cursor:pointer;text-align:left;transition:all .18s cubic-bezier(.22,1,.36,1);animation:fin .38s ease both}
+    .obtn:hover{background:rgba(26,23,20,.08);border-color:rgba(26,23,20,.13);transform:translateX(3px)}
+    .obtn:active{transform:scale(.98)}
+    .obtn.sel{background:var(--ink);border-color:var(--ink)}
+    .obtn.sel .om,.obtn.sel .os{color:#fff}
+    @keyframes fin{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+    .om{font-family:'Shippori Mincho',serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.5;display:block}
+    .os{font-size:11px;color:var(--light);display:block;margin-top:3px}
+    .btn-back{margin-top:14px;width:100%;padding:10px;background:transparent;border:none;font-size:12px;color:var(--light);cursor:pointer;border-radius:10px;transition:all .15s}
+    .btn-back:hover{color:var(--ink);background:rgba(26,23,20,.05)}
+
+    /* AXIS BREAK */
+    .axcard{background:var(--white);border-radius:28px;padding:48px 32px;text-align:center;box-shadow:0 8px 36px rgba(26,23,20,.11)}
+    .axicon{font-size:44px;display:block;margin-bottom:16px}
+    .axtxt{font-family:'Shippori Mincho',serif;font-size:17px;font-weight:600;color:var(--ink);margin-bottom:6px}
+    .axsub{font-size:12px;color:var(--light)}
 
     /* LOADING */
-    .load-card { background:var(--white);border-radius:28px;padding:64px 32px;text-align:center;box-shadow:0 8px 36px rgba(26,23,20,.11); }
-    .load-icon { font-size:52px;margin-bottom:24px;display:block;animation:pulse 1.2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.1)} }
-    .load-txt { font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:28px; }
-    .load-bar-wrap { height:3px;background:rgba(26,23,20,.1);border-radius:2px;overflow:hidden; }
-    .load-bar-fill { height:100%;background:var(--ink);border-radius:2px;width:0;transition:width 1.4s ease; }
+    .lcard{background:var(--white);border-radius:28px;padding:64px 32px;text-align:center;box-shadow:0 8px 36px rgba(26,23,20,.11)}
+    .lico{font-size:52px;display:block;margin-bottom:24px;animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+    .ltxt{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;color:var(--ink);margin-bottom:28px}
+    .lbar{height:3px;background:rgba(26,23,20,.1);border-radius:2px;overflow:hidden}
+    .lfill{height:100%;background:var(--ink);border-radius:2px;width:0;transition:width 1.6s ease}
 
     /* RESULT */
-    .result-outer { border-radius:28px;overflow:hidden;box-shadow:0 16px 56px rgba(26,23,20,.22);animation:reveal .65s cubic-bezier(.22,1,.36,1) both; }
-    @keyframes reveal { from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:none} }
-    .rhead { padding:44px 30px 34px;position:relative;overflow:hidden;min-height:230px;display:flex;flex-direction:column;justify-content:flex-end; }
-    .rhead-bg-icon { position:absolute;top:20px;right:16px;font-size:110px;opacity:.18;line-height:1;user-select:none;animation:float 5s ease-in-out infinite; }
-    @keyframes float { 0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)} }
-    .rhead-num { font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;position:relative;z-index:1; }
-    .rhead-name { font-family:'Shippori Mincho',serif;font-size:28px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:14px;position:relative;z-index:1;letter-spacing:-.01em; }
-    .rhead-tags { display:flex;gap:5px;flex-wrap:wrap;position:relative;z-index:1; }
-    .rhead-tag { font-size:10px;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.85);letter-spacing:.04em; }
-    .rhead-tag.sub { background:rgba(255,255,255,.28);color:#fff;font-weight:600; }
-    .rbody { background:var(--white); }
-    .rcatch { padding:26px 30px 22px;font-family:'Shippori Mincho',serif;font-size:16px;line-height:1.9;color:var(--ink);border-bottom:1px solid rgba(26,23,20,.07);font-style:italic; }
-    .rcatch::before { content:'「'; }
-    .rcatch::after { content:'」'; }
-    .rsec { padding:22px 30px;border-bottom:1px solid rgba(26,23,20,.07);animation:secin .5s ease both; }
+    .router{border-radius:28px;overflow:hidden;box-shadow:0 16px 56px rgba(26,23,20,.22);animation:reveal .65s cubic-bezier(.22,1,.36,1) both}
+    @keyframes reveal{from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:none}}
+    .rhead{padding:44px 30px 34px;position:relative;overflow:hidden;min-height:240px;display:flex;flex-direction:column;justify-content:flex-end}
+    .rbgico{position:absolute;top:16px;right:12px;font-size:120px;opacity:.16;line-height:1;user-select:none;animation:float 5s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+    .rnum{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;position:relative;z-index:1}
+    .rname{font-family:'Shippori Mincho',serif;font-size:30px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;position:relative;z-index:1}
+    .rtype{font-size:13px;color:rgba(255,255,255,.72);margin-bottom:16px;position:relative;z-index:1}
+    .rtags{display:flex;gap:5px;flex-wrap:wrap;position:relative;z-index:1}
+    .rtag{font-size:10px;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.82);letter-spacing:.04em}
+    .rtag.main{background:rgba(255,255,255,.3);color:#fff;font-weight:600}
+    .rbody{background:var(--white)}
+    .rcatch{padding:26px 30px 22px;font-family:'Shippori Mincho',serif;font-size:15px;line-height:1.95;color:var(--ink);border-bottom:1px solid rgba(26,23,20,.07);font-style:italic}
+    .rcatch::before{content:'「'}
+    .rcatch::after{content:'」'}
+    .rsec{padding:20px 30px;border-bottom:1px solid rgba(26,23,20,.07);animation:secin .5s ease both}
     .rsec:nth-child(1){animation-delay:.15s}.rsec:nth-child(2){animation-delay:.28s}.rsec:nth-child(3){animation-delay:.41s}
-    @keyframes secin { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none} }
-    .rsec-head { font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;display:flex;align-items:center;gap:7px; }
-    .rsec-head::after { content:'';flex:1;height:1px;background:rgba(26,23,20,.07); }
-    .rsec-body { font-family:'Shippori Mincho',serif;font-size:15px;line-height:1.95;color:var(--ink); }
-    .rall-ans { padding:18px 30px 0;display:flex;flex-wrap:wrap;gap:5px; }
-    .ans-chip { font-size:10px;padding:4px 10px;border-radius:100px;background:rgba(26,23,20,.06);color:var(--ink-mid);letter-spacing:.04em; }
-    .rfoot { padding:22px 30px 30px; }
-    .btn-copy { width:100%;padding:17px;background:#1A1714;color:#fff;border:none;border-radius:16px;font-family:'Shippori Mincho',serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;margin-bottom:9px; }
-    .btn-copy:hover { background:#2E2925;transform:translateY(-1px); }
-    .btn-copy.ok { background:#3D7A58; }
-    .btn-retry { width:100%;padding:13px;background:transparent;border:1.5px solid rgba(26,23,20,.14);border-radius:16px;font-size:13px;color:var(--ink-light);cursor:pointer;transition:all .18s; }
-    .btn-retry:hover { border-color:var(--ink);color:var(--ink);background:rgba(26,23,20,.03); }
-    .share-note { text-align:center;font-size:11px;color:var(--ink-light);margin-top:10px; }
+    @keyframes secin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .rsh{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--light);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+    .rsh::after{content:'';flex:1;height:1px;background:rgba(26,23,20,.07)}
+    .rsb{font-family:'Shippori Mincho',serif;font-size:14px;line-height:2;color:var(--ink)}
+    .raxes{padding:16px 30px 0;display:flex;flex-wrap:wrap;gap:5px}
+    .achip{font-size:10px;padding:3px 9px;border-radius:100px;background:rgba(26,23,20,.06);color:var(--mid)}
+    .rfoot{padding:20px 30px 28px}
+    .bcopy{width:100%;padding:16px;background:#1A1714;color:#fff;border:none;border-radius:15px;font-family:'Shippori Mincho',serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;margin-bottom:9px}
+    .bcopy:hover{background:#2E2925;transform:translateY(-1px)}
+    .bcopy.ok{background:#3D7A58}
+    .bretry{width:100%;padding:13px;background:transparent;border:1.5px solid rgba(26,23,20,.14);border-radius:15px;font-size:13px;color:var(--light);cursor:pointer;transition:all .18s}
+    .bretry:hover{border-color:var(--ink);color:var(--ink);background:rgba(26,23,20,.03)}
+    .snote{text-align:center;font-size:11px;color:var(--light);margin-top:10px}
   </style>
 </head>
 <body>
 
 <!-- INTRO -->
 <div class="screen active" id="s-intro">
-  <div class="intro-wrap">
-    <div class="intro-top">
-      <p class="intro-tag">Project Blueprint — 64 Types</p>
-      <h1 class="intro-h">あなたの恋愛<br>タイプを<br><em>解き明かす</em></h1>
-      <p class="intro-sub">6つの質問に答えるだけ。<br>64パターンの中からあなただけのタイプが出ます。</p>
-      <div class="intro-stats">
-        <div class="stat"><span class="stat-n">6</span><span class="stat-l">Questions</span></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-n">64</span><span class="stat-l">Patterns</span></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-n">2 min</span><span class="stat-l">Duration</span></div>
+  <div class="intro">
+    <div class="itop">
+      <p class="itag">Project Blueprint — Relationship Type</p>
+      <h1 class="ih">あなたの恋愛<br>タイプを<br><em>解き明かす</em></h1>
+      <p class="isub">6つの軸・12問で測定。<br>64パターンからあなただけのタイプが見つかります。</p>
+      <div class="istats">
+        <div class="stat"><span class="sn">12</span><span class="sl">Questions</span></div>
+        <div class="ssep"></div>
+        <div class="stat"><span class="sn">6</span><span class="sl">Axes</span></div>
+        <div class="ssep"></div>
+        <div class="stat"><span class="sn">64</span><span class="sl">Patterns</span></div>
       </div>
     </div>
-    <div class="intro-bot">
-      <ul class="intro-pts">
+    <div class="ibot">
+      <ul class="ipts">
+        <li>各軸を2問で測定。1問より精度が高い</li>
         <li>恋愛で本当に大切にしていることが言語化される</li>
-        <li>パートナーへの正しい伝え方・接し方がわかる</li>
         <li>結果をそのままLINEで共有できる</li>
       </ul>
-      <button class="btn-start" onclick="startDiag()">診断スタート →</button>
+      <button class="btn-start" onclick="start()">診断スタート →</button>
     </div>
   </div>
 </div>
 
 <!-- QUESTION -->
 <div class="screen" id="s-q">
-  <div class="q-card">
-    <div class="q-prog-wrap"><div class="q-prog-fill" id="q-prog"></div></div>
-    <div class="q-meta">
-      <span class="q-cat-lbl" id="q-cat-lbl"></span>
-      <span class="q-step-n" id="q-step-n"></span>
+  <div class="qcard">
+    <div class="qprog"><div class="qfill" id="qf"></div></div>
+    <div class="qmeta">
+      <span class="qaxis" id="qax"></span>
+      <span class="qnum" id="qn"></span>
     </div>
-    <h2 class="q-text" id="q-text"></h2>
-    <div class="q-opts" id="q-opts"></div>
-    <button class="btn-back" onclick="goBack()">← 戻る</button>
+    <h2 class="qtxt" id="qt"></h2>
+    <div class="qopts" id="qo"></div>
+    <button class="btn-back" onclick="back()">← 戻る</button>
   </div>
 </div>
 
 <!-- LOADING -->
 <div class="screen" id="s-load">
-  <div class="load-card">
-    <span class="load-icon">🔮</span>
-    <p class="load-txt">あなたのタイプを解析中...</p>
-    <div class="load-bar-wrap"><div class="load-bar-fill" id="load-fill"></div></div>
+  <div class="lcard">
+    <span class="lico">🔮</span>
+    <p class="ltxt">あなたのタイプを解析中...</p>
+    <div class="lbar"><div class="lfill" id="lf"></div></div>
   </div>
 </div>
 
 <!-- RESULT -->
 <div class="screen" id="s-result">
-  <div class="result-outer">
-    <div class="rhead" id="rhead">
-      <div class="rhead-bg-icon" id="r-icon"></div>
-      <p class="rhead-num" id="r-num"></p>
-      <h2 class="rhead-name" id="r-name"></h2>
-      <div class="rhead-tags" id="r-tags"></div>
+  <div class="router">
+    <div class="rhead" id="rh">
+      <div class="rbgico" id="ri"></div>
+      <p class="rnum" id="rnum"></p>
+      <h2 class="rname" id="rname"></h2>
+      <p class="rtype" id="rtype"></p>
+      <div class="rtags" id="rtags"></div>
     </div>
     <div class="rbody">
-      <p class="rcatch" id="r-catch"></p>
-      <div class="rsec"><p class="rsec-head"><span>🌟</span>喜ぶポイント</p><p class="rsec-body" id="r-happy"></p></div>
-      <div class="rsec"><p class="rsec-head"><span>⚡</span>地雷ポイント</p><p class="rsec-body" id="r-land"></p></div>
-      <div class="rsec"><p class="rsec-head"><span>💡</span>コミュニケーション指南</p><p class="rsec-body" id="r-guide"></p></div>
-      <div class="rall-ans" id="r-all-ans"></div>
+      <p class="rcatch" id="rc"></p>
+      <div class="rsec"><p class="rsh"><span>🌟</span>喜ぶポイント</p><p class="rsb" id="rh2"></p></div>
+      <div class="rsec"><p class="rsh"><span>⚡</span>地雷ポイント</p><p class="rsb" id="rl"></p></div>
+      <div class="rsec"><p class="rsh"><span>💡</span>コミュニケーション指南</p><p class="rsb" id="rg"></p></div>
+      <div class="raxes" id="rax"></div>
       <div class="rfoot">
-        <button class="btn-copy" id="btn-copy" onclick="copyResult()">📋 結果をコピーしてLINEで共有</button>
-        <button class="btn-retry" onclick="restart()">もう一度診断する</button>
-        <p class="share-note">コピー後、LINEにそのまま貼り付けられます</p>
+        <button class="bcopy" id="bc" onclick="copy()">📋 結果をコピーしてLINEで共有</button>
+        <button class="bretry" onclick="start()">もう一度診断する</button>
+        <p class="snote">コピー後、LINEにそのまま貼り付けられます</p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const SUPABASE_URL = '__SUPABASE_URL__';
-const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
-const configured = !SUPABASE_URL.startsWith('__');
-function sbFetch(p,o={}){ return fetch(SUPABASE_URL+'/rest/v1/'+p,{...o,headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',...(o.headers||{})}}); }
+const SUPABASE_URL='__SUPABASE_URL__';
+const SUPABASE_ANON_KEY='__SUPABASE_ANON_KEY__';
+const configured=!SUPABASE_URL.startsWith('__');
+function sb(p,o={}){return fetch(SUPABASE_URL+'/rest/v1/'+p,{...o,headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json',...(o.headers||{})}})}
 
-/* ── 6 QUESTIONS ── */
-const Qs = [
-  { cat:'⏰ 時間の共有', q:'週末の理想のすごし方は？',
-    A:{ main:'できれば1日中一緒にいたい', sub:'いつでもそばにいたい派',
-        happy:'一緒にいる時間を惜しまず作ってくれること',
-        pain:'連絡なしで別行動が続き、時間を作ろうとしない姿勢' },
-    B:{ main:'午前は各自、午後から合流でいい', sub:'お互いの時間も大切にしたい派',
-        happy:'お互いの時間を自然に尊重してくれること',
-        pain:'「なんで1人でいるの?」という詮索や、過度な束縛' }
-  },
-  { cat:'💼 仕事の優先度', q:'パートナーが急に仕事でデートをキャンセル。どう思う？',
-    A:{ main:'仕事なら仕方ない、次の機会に', sub:'仕事への理解を大切にする派',
-        happy:'仕事を頑張っている姿を応援できること',
-        pain:'仕事を理由にした頻繁なキャンセル、約束を軽視する態度' },
-    B:{ main:'約束を優先してほしかった', sub:'パートナーを最優先にしたい派',
-        happy:'いつも自分を一番に考えてくれていると感じること',
-        pain:'仕事を口実に、関係を何度も後回しにされること' }
-  },
-  { cat:'🤝 協力のスタンス', q:'日常の家事や手伝いについて、自分に近いのは？',
-    A:{ main:'気づいたらなんでも手伝いたい', sub:'助け合いを自然にしたい派',
-        happy:'気づいたら手を貸してくれること、「一緒にやろう」が自然に出てくること',
-        pain:'すべて自分任せで、困っていても一切動かないこと' },
-    B:{ main:'担当を決めて、それぞれがやる', sub:'自立分担でスッキリしたい派',
-        happy:'自分の担当をきちんとこなしてくれること、余計な干渉がないこと',
-        pain:'担当をやらずに相手任せにして責任逃れをすること' }
-  },
-  { cat:'💬 コミュニケーション', q:'悩みを話したとき、相手にしてほしいのは？',
-    A:{ main:'まず「大変だったね」と共感してほしい', sub:'感情を受け取ってほしい派',
-        happy:'「それは辛かったね」と感情をそのまま受け取ってくれること',
-        pain:'話を途中で遮り、すぐ解決策を言うこと。「で、どうしたいの?」という反応' },
-    B:{ main:'どうすればいいか一緒に考えたい', sub:'具体的に解決したい派',
-        happy:'具体的なアドバイスや解決策を一緒に考えてくれること',
-        pain:'感情論だけで話が終わり、何も前に進まないこと' }
-  },
-  { cat:'💰 お金の価値観', q:'お金の使い方で、自分に近いのは？',
-    A:{ main:'将来のためにコツコツ貯める派', sub:'堅実に備えたい派',
-        happy:'将来を見据えた堅実な金銭感覚を持っていること',
-        pain:'「何とかなる」と無計画に使い続け、将来への備えが全くないこと' },
-    B:{ main:'今を楽しむためにしっかり使う派', sub:'今この瞬間を大切にしたい派',
-        happy:'一緒に今を楽しむことに積極的でいてくれること',
-        pain:'「勿体ない」「節約しろ」と、楽しみや体験を全否定されること' }
-  },
-  { cat:'🗺️ 将来・人生設計', q:'2人の将来について、どちらに近い？',
-    A:{ main:'具体的な計画を立てて一緒に実行したい', sub:'将来の設計を共有したい派',
-        happy:'将来の計画を一緒に立て、ロードマップを共有できること',
-        pain:'「その時はその時」と将来の話を一切しないこと、先の見えない関係' },
-    B:{ main:'流れを見ながらその都度話し合いたい', sub:'自然に流れていきたい派',
-        happy:'今の関係を大切にしながら、自然に未来が開けていく感覚',
-        pain:'細かく計画を決めすぎて、自由度や柔軟性が全くなくなること' }
-  }
+/* ── 12問（6軸×2問）── */
+const Qs=[
+  // 軸1: 時間
+  {ax:'⏰ 時間の共有',q:'週末の理想のすごし方は？',
+   A:{m:'1日中一緒にいたい',s:'いつもそばにいたい派'},
+   B:{m:'午前は各自、午後から合流でいい',s:'お互いの時間も大切派'}},
+  {ax:'⏰ 時間の共有',q:'パートナーから「今日は1人で過ごしたい」と言われた。どう感じる？',
+   A:{m:'少し寂しい、もっと一緒にいたかった',s:'一緒の時間が何より大事'},
+   B:{m:'むしろありがたい、自分も好きに過ごせる',s:'個人の時間も充実させたい'}},
+  // 軸2: コミュニケーション
+  {ax:'💬 コミュニケーション',q:'悩みを話したとき、まずしてほしいのは？',
+   A:{m:'「それは大変だったね」と共感してほしい',s:'感情を受け取ってほしい派'},
+   B:{m:'「どうすれば解決できるか」一緒に考えてほしい',s:'具体的に解決したい派'}},
+  {ax:'💬 コミュニケーション',q:'パートナーが落ち込んでいる。まず何をする？',
+   A:{m:'そばにいて、とにかく話を聞く',s:'感情に寄り添う派'},
+   B:{m:'「何かできることある?」と具体的に聞く',s:'行動で支える派'}},
+  // 軸3: 将来
+  {ax:'🗺️ 将来・人生設計',q:'2人の将来について、どちらに近い？',
+   A:{m:'具体的なプランを立てて、一緒に実行したい',s:'将来の設計を共有したい派'},
+   B:{m:'流れに任せて、その都度話し合いたい',s:'自然に流れていきたい派'}},
+  {ax:'🗺️ 将来・人生設計',q:'旅行の計画を立てるとき、自分に近いのは？',
+   A:{m:'事前にルートや予約を全部決めておきたい',s:'計画が決まると安心派'},
+   B:{m:'現地でのんびり決めながら動くのが好き',s:'流れに乗るのが楽しい派'}},
+  // 軸4: 協力
+  {ax:'🤝 協力のスタンス',q:'家事や日常のことで、自分に近いのは？',
+   A:{m:'気づいたらなんでも手伝いたい',s:'助け合いを自然にしたい派'},
+   B:{m:'担当を決めて、それぞれがこなす',s:'役割分担でスッキリしたい派'}},
+  {ax:'🤝 協力のスタンス',q:'パートナーが忙しそうにしている。どうする？',
+   A:{m:'自分から「手伝おうか?」と声をかける',s:'先回りしてサポートする派'},
+   B:{m:'相手が頼むまで、自分のことをする',s:'頼まれたら全力で動く派'}},
+  // 軸5: 仕事
+  {ax:'💼 仕事の優先度',q:'パートナーが急な仕事でデートをキャンセル。どう思う？',
+   A:{m:'仕事なら仕方ない、次の機会に',s:'仕事への理解を大切にする派'},
+   B:{m:'約束を優先してほしかった',s:'パートナーを最優先にしたい派'}},
+  {ax:'💼 仕事の優先度',q:'自分が繁忙期で連絡が減るとき、パートナーには？',
+   A:{m:'理解してほしい、急かさないでほしい',s:'仕事中は集中させてほしい派'},
+   B:{m:'忙しくても、短くても連絡はしたい',s:'つながりを絶やしたくない派'}},
+  // 軸6: お金
+  {ax:'💰 お金の価値観',q:'お金の使い方で、自分に近いのは？',
+   A:{m:'将来のためにコツコツ貯める',s:'堅実に備えたい派'},
+   B:{m:'今を楽しむためにしっかり使う',s:'今この瞬間を大切にしたい派'}},
+  {ax:'💰 お金の価値観',q:'記念日のプレゼント、どちらに近い？',
+   A:{m:'実用的で長く使えるものを選ぶ',s:'使えるものが一番の愛情'},
+   B:{m:'驚かせたくて、少し奮発する',s:'特別感を演出したい派'}},
 ];
 
-/* ── 8 ARCHETYPES (Q1+Q4+Q6) ── */
-const ARCHETYPES = {
-  AAA:{ name:'二人の地図を描く共感者', icon:'🗺️',
-        catch:'そばで感じ合い、二人で未来を設計していく。それが私の愛のかたち。',
-        guide:'感情をまず受け取り、その上で将来の話を具体的に一緒に進めましょう。「そっか、それは辛かったね。じゃあどうしていこうか?」という流れが理想。一緒にいる時間を計画の中に組み込んで。' },
-  AAB:{ name:'そばで感じ合う自然体', icon:'🌊',
-        catch:'そばで感じ合いながら、流れにそって自然に生きていく。',
-        guide:'感情をまず受け取り、あとは流れにまかせましょう。「そっか、辛かったね」で十分なことも多い。難しく考えず、今ここに一緒にいることを大切に。' },
-  ABA:{ name:'課題を共に解く設計者', icon:'🔧',
-        catch:'一緒にいて、問題は一緒に解く。シンプルだけど、それが心地いい。',
-        guide:'一緒にいる時間を確保しつつ、問題は具体的に解決策を出し合って。「一緒に考えよう」という姿勢が、この人には一番伝わります。' },
-  ABB:{ name:'一緒にいながら答えを見つける人', icon:'🧩',
-        catch:'答えを急がなくていい。一緒にいながら、自然に道が見えてくる。',
-        guide:'答えを急がなくていい。一緒にいながら自然にアイデアを出し合うスタイルが合っています。「どうしようか」と投げかけるだけで十分。' },
-  BAA:{ name:'自立しながら未来を描く共感者', icon:'⭐',
-        catch:'お互いの時間を大切にしながら、気持ちで深くつながり、未来を描いていく。',
-        guide:'お互いの時間を尊重しながら、時間を作って将来の話を。「月に一回くらい将来の話をしよう」という提案がちょうどいい。感情を先に受け取ることを忘れずに。' },
-  BAB:{ name:'心の自由な共感者', icon:'🦋',
-        catch:'自分らしく生きながら、感じ合える関係でいたい。',
-        guide:'自由に感じ合える関係が理想。決め込まずに、「最近どう思う?」と感情を共有し合う時間を大切に。先のことより今の気持ちを。' },
-  BBA:{ name:'独立した設計実行者', icon:'🏗️',
-        catch:'自分のスタイルを保ちながら、確実に未来を形にしていく。',
-        guide:'お互いのペースを保ちながら、計画は着実に。「それぞれ考えてきて、次に話し合おう」という進め方がこの人には合っています。' },
-  BBB:{ name:'自由な自立実務家', icon:'🌏',
-        catch:'自分の軸を持ちながら、お互いを尊重して自由に生きる。',
-        guide:'お互いの自由を尊重しながら、必要なときだけ話し合う。深刻にならずに「まあなんとかなるか」というスタンスで。でも大事なことは後回しにしない姿勢を。' },
+/* ── 各軸のコンテンツ ── */
+const AX={
+  0:{A:{h:'一緒にいる時間を惜しまず作ってくれること',p:'連絡なしで別行動が続き、時間を作ろうとしない姿勢'},
+     B:{h:'お互いの時間を自然に尊重してくれること',p:'束縛や詮索、「なんで1人でいるの?」という干渉'}},
+  1:{A:{h:'感情をそのまま受け取ってくれること',p:'話を途中で遮り、すぐ解決策を言うこと。「で、どうしたいの?」という反応'},
+     B:{h:'具体的なアドバイスや解決策を一緒に考えてくれること',p:'感情論だけで話が終わり、何も前に進まないこと'}},
+  2:{A:{h:'将来の計画を一緒に立て、ロードマップを共有できること',p:'「その時はその時」と将来の話を一切しないこと'},
+     B:{h:'今の関係を大切にしながら自然に未来が開けていく感覚',p:'細かく計画を決めすぎて自由度や柔軟性が全くなくなること'}},
+  3:{A:{h:'気づいたら手を貸してくれること、「一緒にやろう」が自然に出てくること',p:'困っていても完全に素知らぬ顔で、一切動かないこと'},
+     B:{h:'自分の担当をきちんとこなしてくれること、余計な干渉がないこと',p:'担当をやらずに相手任せにして責任逃れをすること'}},
+  4:{A:{h:'仕事の頑張りを応援してくれること',p:'仕事を全く理解せず、繁忙期でも配慮ゼロなこと'},
+     B:{h:'いつも自分を一番に考えてくれていると感じること',p:'仕事を口実に、関係を何度も後回しにされること'}},
+  5:{A:{h:'将来を見据えた堅実な金銭感覚を持っていること',p:'「何とかなる」と無計画に使い続け、将来への備えが全くないこと'},
+     B:{h:'一緒に今を楽しむことに積極的でいてくれること',p:'「勿体ない」「節約しろ」と楽しみや体験を全否定されること'}},
 };
 
-/* ── 8 SUBTYPES (Q2+Q3+Q5) ── */
-const SUBTYPES = {
-  AAA:'堅実な縁の下派',
-  AAB:'仕事も楽しみも大事派',
-  ABA:'キャリア重視・堅実独立派',
-  ABB:'キャリア重視・享楽独立派',
-  BAA:'愛情深い・堅実サポート派',
-  BAB:'愛情深い・楽しい助け合い派',
-  BBA:'献身的・堅実独立派',
-  BBB:'献身的・享楽自立派',
+/* ── 8つのアーキタイプ（軸1+軸2+軸3で決まる） ── */
+const ARCH={
+  AAA:{name:'羅針盤',icon:'🧭',
+       catch:'そばで感じ合い、二人で未来の地図を描いていく。それが私の愛のかたち。',
+       guide:'感情をまず受け取り、その上で将来の話を具体的に一緒に進めましょう。「そっか、それは辛かったね。じゃあどうしていこうか?」という流れが理想。一緒にいる時間を計画の中に組み込んで。'},
+  AAB:{name:'波紋',icon:'🌊',
+       catch:'そばで感じ合いながら、流れにそって自然に生きていく。',
+       guide:'感情をまず受け取り、あとは流れにまかせましょう。「そっか、辛かったね」で十分なことも多い。難しく考えず、今ここに一緒にいることを大切に。'},
+  ABA:{name:'設計図',icon:'📐',
+       catch:'一緒にいて、問題は一緒に解く。それがシンプルに心地いい。',
+       guide:'一緒にいる時間を確保しつつ、問題は具体的に解決策を出し合って。「一緒に考えよう」という姿勢が、この人には一番伝わります。'},
+  ABB:{name:'探検家',icon:'🔭',
+       catch:'答えを急がなくていい。一緒にいながら、自然に道が見えてくる。',
+       guide:'答えを急がなくていい。一緒にいながら自然にアイデアを出し合うスタイルが合っています。「どうしようか」と投げかけるだけで十分。'},
+  BAA:{name:'星座',icon:'⭐',
+       catch:'離れていても感情でつながり、描いた未来へ着実に歩いていく。',
+       guide:'お互いの時間を尊重しながら、時間を作って将来の話を。「月に一回くらい将来の話をしよう」という提案がちょうどいい。感情を先に受け取ることを忘れずに。'},
+  BAB:{name:'渡り鳥',icon:'🦅',
+       catch:'自分らしく自由に生きながら、感じ合える関係でいたい。',
+       guide:'自由に感じ合える関係が理想。決め込まずに「最近どう思う?」と感情を共有し合う時間を大切に。先のことより今の気持ちを。'},
+  BBA:{name:'建築士',icon:'🏗️',
+       catch:'自分のスタイルを保ちながら、確実に未来を形にしていく。',
+       guide:'お互いのペースを保ちながら、計画は着実に。「それぞれ考えてきて、次に話し合おう」という進め方がこの人には合っています。'},
+  BBB:{name:'一匹狼',icon:'🐺',
+       catch:'自分の軸を持ちながら、お互いを尊重して自由に生きる。',
+       guide:'お互いの自由を尊重しながら、必要なときだけ話し合う。深刻にならずに「まあなんとかなるか」というスタンスで。でも大事なことは後回しにしない姿勢を。'},
 };
 
-/* ── HEAD COLORS (Q1+Q4) ── */
-const HEAD_COLORS = {
+/* ── 8サブタイプ（軸4+軸5+軸6） ── */
+const SUB={
+  AAA:'縁の下の堅実派',AAB:'縁の下の享楽派',
+  ABA:'愛情深い堅実派',ABB:'愛情深い享楽派',
+  BAA:'独立した堅実派',BAB:'独立した享楽派',
+  BBA:'献身的な堅実派',BBB:'献身的な享楽派',
+};
+
+/* ── ヘッダー配色（軸1+軸2） ── */
+const COL={
   AA:'linear-gradient(145deg,#B06040 0%,#782A10 100%)',
   AB:'linear-gradient(145deg,#3A5878 0%,#1A3858 100%)',
   BA:'linear-gradient(145deg,#2E6A50 0%,#104A30 100%)',
@@ -281,144 +295,124 @@ const HEAD_COLORS = {
 };
 
 /* ── STATE ── */
-let answers = [];
-let curQ = 0;
-let _char = null;
+let ans=[], cur=0, _r=null;
 
 /* ── HELPERS ── */
-function showScreen(id) {
+function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  requestAnimationFrame(()=>{ document.getElementById(id).classList.add('active'); window.scrollTo({top:0}); });
+  requestAnimationFrame(()=>{document.getElementById(id).classList.add('active');window.scrollTo({top:0})});
 }
 
-function patternNum(ans) {
-  return parseInt(ans.map(a=>a==='A'?'0':'1').join(''),2)+1;
+function calcAxis(q1,q2){
+  if(q1==='A'&&q2==='A') return 'A';
+  if(q1==='B'&&q2==='B') return 'B';
+  return q1; // タイブレーク: 1問目優先
 }
+
+function axes(){
+  return [0,1,2,3,4,5].map(i=>calcAxis(ans[i*2],ans[i*2+1]));
+}
+
+function pnum(ax){ return parseInt(ax.map(a=>a==='A'?'0':'1').join(''),2)+1; }
 
 /* ── FLOW ── */
-function startDiag() { answers=[]; curQ=0; renderQ(); showScreen('s-q'); }
-function restart() { startDiag(); }
+function start(){ ans=[]; cur=0; renderQ(); show('s-q'); }
 
-function renderQ() {
-  const q = Qs[curQ];
-  const pct = Math.round((curQ/6)*100);
-  document.getElementById('q-prog').style.width = pct+'%';
-  document.getElementById('q-cat-lbl').textContent = q.cat;
-  document.getElementById('q-step-n').textContent = (curQ+1)+' / 6';
-  document.getElementById('q-text').textContent = q.q;
-
-  const opts = document.getElementById('q-opts');
-  opts.innerHTML = '';
-  ['A','B'].forEach((key,i)=>{
-    const o = q[key];
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.style.animationDelay = i*80+'ms';
-    btn.innerHTML = `<span class="opt-main">${o.main}</span><span class="opt-sub">${o.sub}</span>`;
-    btn.onclick = ()=>selectOpt(key, btn);
-    opts.appendChild(btn);
+function renderQ(){
+  const q=Qs[cur];
+  document.getElementById('qf').style.width=Math.round((cur/12)*100)+'%';
+  document.getElementById('qax').textContent=q.ax;
+  document.getElementById('qn').textContent=(cur+1)+' / 12';
+  document.getElementById('qt').textContent=q.q;
+  const o=document.getElementById('qo');
+  o.innerHTML='';
+  ['A','B'].forEach((k,i)=>{
+    const b=document.createElement('button');
+    b.className='obtn'; b.style.animationDelay=i*80+'ms';
+    b.innerHTML=`<span class="om">${q[k].m}</span><span class="os">${q[k].s}</span>`;
+    b.onclick=()=>pick(k,b);
+    o.appendChild(b);
   });
 }
 
-function selectOpt(key, btn) {
-  btn.classList.add('selected');
-  answers[curQ] = key;
+function pick(k,btn){
+  btn.classList.add('sel');
+  ans[cur]=k;
   setTimeout(()=>{
-    curQ++;
-    if(curQ < 6) { renderQ(); }
-    else { showLoading(); }
-  }, 280);
+    cur++;
+    if(cur<12){ renderQ(); }
+    else{ loading(); }
+  },260);
 }
 
-function goBack() {
-  if(curQ === 0) { showScreen('s-intro'); return; }
-  curQ--;
-  answers.pop();
-  renderQ();
+function back(){
+  if(cur===0){ show('s-intro'); return; }
+  cur--; ans.pop(); renderQ();
 }
 
-function showLoading() {
-  showScreen('s-load');
-  requestAnimationFrame(()=>{
-    document.getElementById('load-fill').style.width = '100%';
+function loading(){
+  show('s-load');
+  requestAnimationFrame(()=>{ document.getElementById('lf').style.width='100%'; });
+  setTimeout(result, 1800);
+}
+
+function result(){
+  const ax=axes();
+  const akey=ax[0]+ax[1]+ax[2]; // 軸1+2+3
+  const skey=ax[3]+ax[4]+ax[5]; // 軸4+5+6
+  const arch=ARCH[akey], sub=SUB[skey];
+  const num=pnum(ax);
+
+  const happy=[AX[0][ax[0]].h, AX[1][ax[1]].h, AX[3][ax[3]].h].join('。')+'こと。';
+  const land=[AX[1][ax[1]].p, AX[0][ax[0]].p, AX[5][ax[5]].p].join('。また、')+'こと。';
+
+  _r={arch,sub,num,happy,land,ax,akey,skey};
+
+  document.getElementById('rh').style.background=COL[ax[0]+ax[1]];
+  document.getElementById('ri').textContent=arch.icon;
+  document.getElementById('rnum').textContent='No.'+num+' / 64';
+  document.getElementById('rname').textContent=arch.name+'タイプ';
+  document.getElementById('rtype').textContent=sub;
+  document.getElementById('rc').textContent=arch.catch;
+  document.getElementById('rh2').textContent=happy;
+  document.getElementById('rl').textContent=land;
+  document.getElementById('rg').textContent=arch.guide;
+
+  const tags=document.getElementById('rtags');
+  const axLabels=['時間','共感/解決','将来','協力','仕事','お金'];
+  const axNames=ax.map((a,i)=>{
+    const q=Qs[i*2]; return a==='A'?q.A.s:q.B.s;
   });
-  setTimeout(()=>{ buildAndShowResult(); }, 1600);
+  tags.innerHTML=axNames.slice(0,3).map((n,i)=>`<span class="rtag${i===0?' main':''}">${n}</span>`).join('');
+
+  const rax=document.getElementById('rax');
+  rax.innerHTML=axNames.map(n=>`<span class="achip">${n}</span>`).join('');
+
+  const bc=document.getElementById('bc');
+  bc.textContent='📋 結果をコピーしてLINEで共有'; bc.classList.remove('ok');
+
+  if(configured) sb('blueprint_results',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({pattern:ax.join(''),num,archetype:akey,subtype:skey})}).catch(()=>{});
+
+  show('s-result');
 }
 
-function buildAndShowResult() {
-  const ans = answers;
-  const archKey = ans[0]+ans[3]+ans[5];  // Q1+Q4+Q6
-  const subKey  = ans[1]+ans[2]+ans[4];  // Q2+Q3+Q5
-  const arch    = ARCHETYPES[archKey];
-  const subName = SUBTYPES[subKey];
-  const color   = HEAD_COLORS[ans[0]+ans[3]]; // Q1+Q4
-  const num     = patternNum(ans);
-
-  const happy = [
-    Qs[0][ans[0]].happy,
-    Qs[2][ans[2]].happy,
-    Qs[3][ans[3]].happy,
-  ].join('。') + 'こと。';
-
-  const land = [
-    Qs[3][ans[3]].pain,
-    Qs[0][ans[0]].pain,
-    Qs[4][ans[4]].pain,
-  ].join('。また、') + 'こと。';
-
-  _char = { arch, subName, num, happy, land, ans };
-
-  document.getElementById('rhead').style.background = color;
-  document.getElementById('r-icon').textContent = arch.icon;
-  document.getElementById('r-num').textContent = 'No.'+num+' / 64';
-  document.getElementById('r-name').textContent = arch.name;
-  document.getElementById('r-catch').textContent = arch.catch;
-  document.getElementById('r-happy').textContent = happy;
-  document.getElementById('r-land').textContent = land;
-  document.getElementById('r-guide').textContent = arch.guide;
-
-  const tags = document.getElementById('r-tags');
-  tags.innerHTML = `<span class="rhead-tag sub">${subName}</span>`;
-
-  const allAns = document.getElementById('r-all-ans');
-  allAns.innerHTML = ans.map((a,i)=>`<span class="ans-chip">${Qs[i][a].sub}</span>`).join('');
-
-  const btn = document.getElementById('btn-copy');
-  btn.textContent = '📋 結果をコピーしてLINEで共有';
-  btn.classList.remove('ok');
-
-  if(configured) sbFetch('blueprint_results',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({pattern:`${ans.join('')}`,num,archetype:archKey,subtype:subKey})}).catch(()=>{});
-
-  showScreen('s-result');
-}
-
-function copyResult() {
-  if(!_char) return;
-  const { arch, subName, num, happy, land, ans } = _char;
-  const txt = [
-    '【プロジェクト・ブループリント診断】',
-    '',
-    `✨ ${arch.name}`,
-    `${subName}（No.${num} / 64）`,
-    '',
-    `「${arch.catch}」`,
-    '',
-    '🌟 喜ぶポイント',
-    happy,
-    '',
-    '⚡ 地雷ポイント',
-    land,
-    '',
-    '▶ あなたも試してみて',
+function copy(){
+  if(!_r) return;
+  const{arch,sub,num,happy,land}=_r;
+  const txt=[
+    '【プロジェクト・ブループリント診断】','',
+    `✨ ${arch.name}タイプ`,`${sub}（No.${num} / 64）`,'',
+    `「${arch.catch}」`,'',
+    '🌟 喜ぶポイント',happy,'',
+    '⚡ 地雷ポイント',land,'',
+    '▶ あなたも診断してみて',
     'https://kantei-app-gamma.vercel.app/blueprint/',
   ].join('\n');
-
   navigator.clipboard.writeText(txt).then(()=>{
-    const btn = document.getElementById('btn-copy');
-    btn.textContent = '✓ コピーしました！LINEに貼り付けて';
-    btn.classList.add('ok');
-    setTimeout(()=>{ btn.textContent='📋 結果をコピーしてLINEで共有'; btn.classList.remove('ok'); },3000);
-  }).catch(()=>alert('コピーできませんでした。手動でコピーしてください。'));
+    const b=document.getElementById('bc');
+    b.textContent='✓ コピーしました！LINEに貼り付けて'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent='📋 結果をコピーしてLINEで共有';b.classList.remove('ok')},3000);
+  }).catch(()=>alert('コピーできませんでした'));
 }
 </script>
 </body>
