@@ -6,419 +6,322 @@
   <title>プロジェクト・ブループリント | 関係性タイプ診断</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #EDE8DF;
-      --ink: #1C1915;
-      --ink-mid: #5C5650;
-      --ink-light: #9A948C;
+      --bg: #EAE5DB;
+      --ink: #1A1714;
+      --ink-mid: #5A544E;
+      --ink-light: #9B958E;
       --white: #FDFAF5;
-      --shadow-sm: 0 2px 12px rgba(28,25,21,0.08);
-      --shadow-md: 0 8px 40px rgba(28,25,21,0.12);
-      --shadow-lg: 0 20px 64px rgba(28,25,21,0.18);
+      --radius-card: 28px;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html { scroll-behavior: smooth; }
+    html { -webkit-font-smoothing: antialiased; }
     body {
       min-height: 100svh;
       background: var(--bg);
       font-family: 'Noto Sans JP', sans-serif;
       color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 28px 16px 48px;
     }
     body::before {
       content: '';
       position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 0;
     }
 
-    /* ── SCREENS ── */
-    .screen { display: none; width: 100%; max-width: 460px; position: relative; z-index: 1; }
-    .screen.active { display: block; animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both; }
-    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    /* ─── SCREENS ─── */
+    .screen { display: none; width: 100%; max-width: 440px; z-index: 1; position: relative; }
+    .screen.active { display: block; animation: screenIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+    @keyframes screenIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
-    /* ── INTRO ── */
-    .intro-card {
-      background: var(--white);
-      border-radius: 32px;
-      padding: 52px 36px 44px;
-      box-shadow: var(--shadow-md);
-    }
-    .intro-eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--ink-light);
-      margin-bottom: 32px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .intro-eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 28px; height: 1px;
-      background: var(--ink-light);
-    }
-    .intro-logo {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1.35;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      margin-bottom: 10px;
-    }
-    .intro-logo span { color: var(--ink-light); font-weight: 400; font-size: 22px; }
-    .intro-rule { width: 48px; height: 3px; background: var(--ink); border-radius: 2px; margin: 24px 0; }
-    .intro-desc {
-      font-size: 14px;
-      line-height: 1.9;
-      color: var(--ink-mid);
-      margin-bottom: 36px;
-    }
-    .intro-meta {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-    .meta-chip {
-      font-size: 11px;
-      color: var(--ink-light);
-      border: 1px solid rgba(28,25,21,0.12);
-      border-radius: 100px;
-      padding: 5px 14px;
-    }
-    .btn-start {
-      width: 100%;
-      padding: 20px 24px;
-      background: var(--ink);
-      color: var(--white);
-      border: none;
-      border-radius: 20px;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      box-shadow: 0 4px 20px rgba(28,25,21,0.25);
-    }
-    .btn-start:hover { background: #2E2925; box-shadow: 0 6px 28px rgba(28,25,21,0.32); transform: translateY(-1px); }
-    .btn-start:active { transform: scale(0.98); }
-
-    /* ── STEP CARDS ── */
-    .step-card {
-      background: var(--white);
-      border-radius: 32px;
-      padding: 40px 32px 36px;
-      box-shadow: var(--shadow-md);
-    }
-    .step-progress {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 36px;
-    }
-    .pip {
-      height: 3px;
-      border-radius: 2px;
-      background: rgba(28,25,21,0.12);
-      flex: 1;
-      transition: background 0.3s ease;
-    }
-    .pip.done { background: var(--ink); }
-    .pip.active { background: var(--ink); opacity: 0.5; }
-    .step-num {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-light);
-      margin-bottom: 10px;
-    }
-    .step-q {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.6;
-      color: var(--ink);
-      margin-bottom: 8px;
-    }
-    .step-sub {
-      font-size: 12px;
-      color: var(--ink-light);
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-    .cat-list { display: flex; flex-direction: column; gap: 10px; }
-    .cat-btn {
-      width: 100%;
-      padding: 16px 18px;
-      background: rgba(28,25,21,0.04);
-      border: 1.5px solid transparent;
-      border-radius: 16px;
-      cursor: pointer;
-      text-align: left;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      transition: all 0.18s ease;
-      animation: fadein 0.4s ease both;
-    }
-    .cat-btn:hover {
-      background: rgba(28,25,21,0.07);
-      border-color: rgba(28,25,21,0.12);
-      transform: translateX(3px);
-    }
-    .cat-btn:active { transform: scale(0.98) translateX(2px); }
-    @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-    .cat-emoji { font-size: 24px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
-    .cat-text { flex: 1; }
-    .cat-name { font-family: 'Shippori Mincho', serif; font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-    .cat-hint { font-size: 11px; color: var(--ink-light); line-height: 1.5; }
-    .btn-back {
-      width: 100%;
-      margin-top: 16px;
-      padding: 12px;
-      background: transparent;
-      border: none;
-      font-size: 13px;
-      color: var(--ink-light);
-      cursor: pointer;
-      border-radius: 12px;
-      transition: all 0.15s ease;
-    }
-    .btn-back:hover { color: var(--ink); background: rgba(28,25,21,0.05); }
-
-    /* ── RESULT CARD ── */
-    .result-wrap { border-radius: 32px; overflow: hidden; box-shadow: var(--shadow-lg); }
-    .result-header {
-      padding: 48px 32px 36px;
+    /* ─── INTRO ─── */
+    .intro-wrap { background: var(--white); border-radius: var(--radius-card); overflow: hidden; box-shadow: 0 12px 48px rgba(26,23,20,0.14); }
+    .intro-top {
+      background: #1A1714;
+      padding: 48px 36px 40px;
       position: relative;
       overflow: hidden;
-      min-height: 220px;
     }
-    .result-header::after {
+    .intro-top::before {
       content: '';
       position: absolute; inset: 0;
-      background: rgba(0,0,0,0.12);
+      background: radial-gradient(ellipse at 80% 20%, rgba(192,124,82,0.25) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(74,106,138,0.2) 0%, transparent 60%);
+    }
+    .intro-num {
+      position: relative; z-index: 1;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-bottom: 32px;
+    }
+    .intro-title {
+      position: relative; z-index: 1;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 34px; font-weight: 800;
+      line-height: 1.3; color: #fff;
+      letter-spacing: -0.01em; margin-bottom: 20px;
+    }
+    .intro-title em { font-style: normal; color: rgba(255,255,255,0.5); font-size: 24px; font-weight: 400; }
+    .intro-lead {
+      position: relative; z-index: 1;
+      font-size: 13px; color: rgba(255,255,255,0.6);
+      line-height: 1.85;
+    }
+    .intro-stats {
+      display: flex; gap: 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 36px; padding-top: 28px;
+      position: relative; z-index: 1;
+    }
+    .stat { flex: 1; text-align: center; }
+    .stat-n { font-family: 'Shippori Mincho', serif; font-size: 28px; font-weight: 700; color: #fff; display: block; }
+    .stat-l { font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); display: block; margin-top: 2px; }
+    .stat-sep { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; }
+    .intro-bottom { padding: 32px 36px; }
+    .intro-points { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .intro-points li {
+      font-size: 13px; color: var(--ink-mid); line-height: 1.6;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .intro-points li::before { content: '—'; color: var(--ink-light); flex-shrink: 0; }
+    .btn-start {
+      width: 100%; padding: 20px;
+      background: #1A1714; color: #fff;
+      border: none; border-radius: 18px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 17px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(26,23,20,0.3);
+    }
+    .btn-start:hover { background: #2E2925; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,23,20,0.35); }
+    .btn-start:active { transform: scale(0.98); }
+
+    /* ─── STEP SCREENS ─── */
+    .step-card { background: var(--white); border-radius: var(--radius-card); padding: 36px 28px 28px; box-shadow: 0 8px 36px rgba(26,23,20,0.11); }
+    .progress-bar { height: 2px; background: rgba(26,23,20,0.1); border-radius: 2px; margin-bottom: 36px; position: relative; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--ink); border-radius: 2px; transition: width 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .step-meta { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 12px; }
+    .step-q {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px; font-weight: 700; line-height: 1.55;
+      color: var(--ink); margin-bottom: 28px;
+    }
+    .cat-grid { display: flex; flex-direction: column; gap: 8px; }
+    .cat-btn {
+      width: 100%; padding: 15px 18px;
+      background: rgba(26,23,20,0.04);
+      border: 1.5px solid transparent;
+      border-radius: 14px; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 14px;
+      transition: all 0.18s cubic-bezier(0.22,1,0.36,1);
+      animation: itemIn 0.4s ease both;
+    }
+    .cat-btn:hover { background: rgba(26,23,20,0.08); border-color: rgba(26,23,20,0.12); transform: translateX(4px); }
+    .cat-btn:active { transform: scale(0.98) translateX(2px); }
+    @keyframes itemIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+    .cat-em { font-size: 22px; flex-shrink: 0; }
+    .cat-info { flex: 1; }
+    .cat-nm { font-family: 'Shippori Mincho', serif; font-size: 15px; font-weight: 600; color: var(--ink); }
+    .cat-hn { font-size: 11px; color: var(--ink-light); margin-top: 2px; line-height: 1.4; }
+    .cat-arr { font-size: 14px; color: var(--ink-light); flex-shrink: 0; }
+    .btn-back { margin-top: 14px; width: 100%; padding: 10px; background: transparent; border: none; font-size: 12px; color: var(--ink-light); cursor: pointer; border-radius: 10px; transition: all 0.15s ease; }
+    .btn-back:hover { color: var(--ink); background: rgba(26,23,20,0.04); }
+
+    /* ─── RESULT ─── */
+    .result-outer { border-radius: var(--radius-card); overflow: hidden; box-shadow: 0 16px 56px rgba(26,23,20,0.2); animation: cardReveal 0.65s cubic-bezier(0.22,1,0.36,1) both; }
+    @keyframes cardReveal { from { opacity: 0; transform: scale(0.94) translateY(20px); } to { opacity: 1; transform: none; } }
+
+    .result-head {
+      padding: 44px 32px 36px;
+      position: relative; overflow: hidden;
+      min-height: 240px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .rh-glow {
+      position: absolute; top: -40px; right: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
       pointer-events: none;
     }
-    .result-bg-icon {
-      position: absolute;
-      right: -8px; top: 16px;
-      font-size: 120px;
-      opacity: 0.2;
-      line-height: 1;
-      user-select: none;
-      animation: float 4s ease-in-out infinite;
+    .rh-icon {
+      position: absolute; top: 28px; right: 24px;
+      font-size: 100px; line-height: 1;
+      opacity: 0.22; user-select: none;
+      animation: iconFloat 5s ease-in-out infinite;
     }
-    @keyframes float { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
-    .result-label {
-      position: relative; z-index: 1;
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    @keyframes iconFloat { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-10px) rotate(4deg); } }
+    .rh-num {
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 10px; position: relative; z-index: 1;
     }
-    .result-label::before { content: ''; display: block; width: 20px; height: 1px; background: rgba(255,255,255,0.5); }
-    .result-name {
-      position: relative; z-index: 1;
+    .rh-name {
       font-family: 'Shippori Mincho', serif;
-      font-size: 30px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.25;
-      margin-bottom: 14px;
+      font-size: 32px; font-weight: 800; color: #fff;
+      line-height: 1.2; margin-bottom: 14px;
+      position: relative; z-index: 1;
       letter-spacing: -0.01em;
     }
-    .result-catch {
-      position: relative; z-index: 1;
-      font-size: 13px;
-      color: rgba(255,255,255,0.88);
-      line-height: 1.75;
+    .rh-tags { display: flex; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .rh-tag {
+      font-size: 10px; padding: 4px 10px; border-radius: 100px;
+      background: rgba(255,255,255,0.16); color: rgba(255,255,255,0.85);
+      letter-spacing: 0.05em; backdrop-filter: blur(4px);
+    }
+    .rh-tag.t1 { background: rgba(255,255,255,0.28); font-weight: 600; color: #fff; }
+
+    .result-body { background: var(--white); padding: 0; }
+    .r-catch {
+      padding: 28px 32px 24px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px; line-height: 1.9; color: var(--ink);
+      border-bottom: 1px solid rgba(26,23,20,0.07);
       font-style: italic;
     }
-    .result-body {
-      background: var(--white);
-      padding: 36px 32px 32px;
+    .r-catch::before { content: '「'; }
+    .r-catch::after { content: '」'; }
+
+    .r-sections { padding: 4px 0; }
+    .r-sec {
+      padding: 22px 32px;
+      border-bottom: 1px solid rgba(26,23,20,0.07);
+      animation: secIn 0.5s ease both;
     }
-    .result-section {
-      margin-bottom: 28px;
+    @keyframes secIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .r-sec:nth-child(1) { animation-delay: 0.15s; }
+    .r-sec:nth-child(2) { animation-delay: 0.28s; }
+    .r-sec:nth-child(3) { animation-delay: 0.41s; }
+    .r-sec-head {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--ink-light); margin-bottom: 12px; font-weight: 500;
     }
-    .result-section:last-of-type { margin-bottom: 0; }
-    .section-tag {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-light);
+    .r-sec-ico { font-size: 13px; }
+    .r-sec-body {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 15px; line-height: 1.95; color: var(--ink);
+    }
+
+    .r-share { padding: 28px 32px 32px; }
+    .btn-copy {
+      width: 100%; padding: 17px;
+      background: #1A1714; color: #fff;
+      border: none; border-radius: 16px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.04em;
+      transition: all 0.2s ease;
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
-    .section-tag::after { content: ''; flex: 1; height: 1px; background: rgba(28,25,21,0.08); }
-    .section-icon { font-size: 14px; }
-    .section-text {
-      font-family: 'Shippori Mincho', serif;
-      font-size: 15px;
-      line-height: 1.9;
-      color: var(--ink);
-    }
-    .result-divider { height: 1px; background: rgba(28,25,21,0.07); margin: 28px 0; }
-    .result-footer {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 28px;
-    }
-    .btn-cta {
-      width: 100%;
-      padding: 18px 24px;
-      border: none;
-      border-radius: 18px;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      letter-spacing: 0.03em;
-    }
-    .btn-cta:active { transform: scale(0.98); }
-    .btn-retry-out {
-      width: 100%;
-      padding: 14px;
+    .btn-copy:hover { background: #2E2925; transform: translateY(-1px); }
+    .btn-copy:active { transform: scale(0.98); }
+    .btn-copy.copied { background: #3D7A68; }
+    .btn-retry {
+      width: 100%; padding: 14px;
       background: transparent;
-      border: 1.5px solid rgba(28,25,21,0.14);
-      border-radius: 18px;
-      font-size: 13px;
-      color: var(--ink-light);
-      cursor: pointer;
-      transition: all 0.18s ease;
-      font-family: 'Noto Sans JP', sans-serif;
+      border: 1.5px solid rgba(26,23,20,0.14);
+      border-radius: 16px; font-size: 13px; color: var(--ink-light);
+      cursor: pointer; transition: all 0.18s ease; font-family: 'Noto Sans JP', sans-serif;
     }
-    .btn-retry-out:hover { border-color: var(--ink); color: var(--ink); background: rgba(28,25,21,0.03); }
-    .result-combo {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-    .combo-chip {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      padding: 4px 12px;
-      border-radius: 100px;
-      background: rgba(28,25,21,0.06);
-      color: var(--ink-mid);
-    }
-    .combo-chip.rank1 { font-weight: 600; }
+    .btn-retry:hover { border-color: var(--ink); color: var(--ink); background: rgba(26,23,20,0.03); }
+    .share-note { text-align: center; font-size: 11px; color: var(--ink-light); margin-top: 12px; }
   </style>
 </head>
 <body>
 
-<!-- INTRO -->
+<!-- ── INTRO ── -->
 <div class="screen active" id="s-intro">
-  <div class="intro-card">
-    <p class="intro-eyebrow">Relationship Blueprint</p>
-    <h1 class="intro-logo">プロジェクト<br><span>ブループリント</span></h1>
-    <div class="intro-rule"></div>
-    <p class="intro-desc">
-      あなたが恋愛・パートナーシップで本当に大切にしている価値観は何ですか？<br>
-      3つの選択から、あなただけの「関係性タイプ」を診断します。
-    </p>
-    <div class="intro-meta">
-      <span class="meta-chip">所要時間 約1分</span>
-      <span class="meta-chip">120パターン</span>
-      <span class="meta-chip">完全無料</span>
+  <div class="intro-wrap">
+    <div class="intro-top">
+      <p class="intro-num">Project Blueprint — Relationship Type</p>
+      <h1 class="intro-title">あなたの恋愛<br>タイプを<br><em>解き明かす</em></h1>
+      <p class="intro-lead">パートナーとの関係で何を大切にするか——<br>3つの選択から、あなただけのタイプを導き出します。</p>
+      <div class="intro-stats">
+        <div class="stat"><span class="stat-n">3</span><span class="stat-l">Questions</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-n">120</span><span class="stat-l">Patterns</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-n">1 min</span><span class="stat-l">Duration</span></div>
+      </div>
     </div>
-    <button class="btn-start" onclick="startDiag()">診断をはじめる →</button>
+    <div class="intro-bottom">
+      <ul class="intro-points">
+        <li>恋愛で譲れないことと、逆に地雷になることがわかる</li>
+        <li>パートナーへの正しい伝え方・接し方がわかる</li>
+        <li>結果をそのままLINEで共有できる</li>
+      </ul>
+      <button class="btn-start" onclick="startDiag()">診断スタート →</button>
+    </div>
   </div>
 </div>
 
-<!-- STEP 1 -->
+<!-- ── STEP 1 ── -->
 <div class="screen" id="s-step1">
   <div class="step-card">
-    <div class="step-progress">
-      <div class="pip active" id="pip1a"></div>
-      <div class="pip" id="pip1b"></div>
-      <div class="pip" id="pip1c"></div>
-    </div>
-    <p class="step-num">Step 1 / 3</p>
-    <p class="step-q">あなたが関係で<br>最も大切にしていることは？</p>
-    <p class="step-sub">パートナーとの関係において、一番ここを大事にしたい、というものを選んでください。</p>
-    <div class="cat-list" id="list1"></div>
-    <button class="btn-back" onclick="goIntro()">← 戻る</button>
+    <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+    <p class="step-meta">Step 1 / 3 — 最も大切なこと</p>
+    <h2 class="step-q">パートナーとの関係で、あなたが一番大切にしていることは？</h2>
+    <div class="cat-grid" id="list1"></div>
+    <button class="btn-back" onclick="goIntro()">← トップに戻る</button>
   </div>
 </div>
 
-<!-- STEP 2 -->
+<!-- ── STEP 2 ── -->
 <div class="screen" id="s-step2">
   <div class="step-card">
-    <div class="step-progress">
-      <div class="pip done"></div>
-      <div class="pip active"></div>
-      <div class="pip"></div>
-    </div>
-    <p class="step-num">Step 2 / 3</p>
-    <p class="step-q">次に大切なことは？</p>
-    <p class="step-sub">残りの項目の中から、2番目に重要なものを選んでください。</p>
-    <div class="cat-list" id="list2"></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:66%"></div></div>
+    <p class="step-meta">Step 2 / 3 — 2番目に大切なこと</p>
+    <h2 class="step-q">次に大切なことは？</h2>
+    <div class="cat-grid" id="list2"></div>
     <button class="btn-back" onclick="goStep1()">← 戻る</button>
   </div>
 </div>
 
-<!-- STEP 3 -->
+<!-- ── STEP 3 ── -->
 <div class="screen" id="s-step3">
   <div class="step-card">
-    <div class="step-progress">
-      <div class="pip done"></div>
-      <div class="pip done"></div>
-      <div class="pip active"></div>
-    </div>
-    <p class="step-num">Step 3 / 3</p>
-    <p class="step-q">最も許せないことは？</p>
-    <p class="step-sub">ここがズレたら絶対に無理、というものを選んでください。あなたの「地雷」です。</p>
-    <div class="cat-list" id="list3"></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:99%"></div></div>
+    <p class="step-meta">Step 3 / 3 — 絶対に許せないこと</p>
+    <h2 class="step-q">ここがズレたら<br>絶対に無理——あなたの「地雷」は？</h2>
+    <div class="cat-grid" id="list3"></div>
     <button class="btn-back" onclick="goStep2()">← 戻る</button>
   </div>
 </div>
 
-<!-- RESULT -->
+<!-- ── RESULT ── -->
 <div class="screen" id="s-result">
-  <div class="result-wrap">
-    <div class="result-header" id="r-header">
-      <div class="result-bg-icon" id="r-bg-icon"></div>
-      <p class="result-label">Your Type</p>
-      <h2 class="result-name" id="r-name"></h2>
-      <p class="result-catch" id="r-catch"></p>
+  <div class="result-outer">
+    <div class="result-head" id="r-head">
+      <div class="rh-glow"></div>
+      <div class="rh-icon" id="r-icon"></div>
+      <p class="rh-num" id="r-num"></p>
+      <h2 class="rh-name" id="r-name"></h2>
+      <div class="rh-tags" id="r-tags"></div>
     </div>
     <div class="result-body">
-      <div class="result-combo" id="r-combo"></div>
-      <div class="result-section">
-        <p class="section-tag"><span class="section-icon">🌟</span>喜ぶポイント</p>
-        <p class="section-text" id="r-happy"></p>
+      <p class="r-catch" id="r-catch"></p>
+      <div class="r-sections">
+        <div class="r-sec">
+          <p class="r-sec-head"><span class="r-sec-ico">🌟</span>喜ぶポイント</p>
+          <p class="r-sec-body" id="r-happy"></p>
+        </div>
+        <div class="r-sec">
+          <p class="r-sec-head"><span class="r-sec-ico">⚡</span>地雷ポイント</p>
+          <p class="r-sec-body" id="r-land"></p>
+        </div>
+        <div class="r-sec">
+          <p class="r-sec-head"><span class="r-sec-ico">💡</span>コミュニケーション指南</p>
+          <p class="r-sec-body" id="r-guide"></p>
+        </div>
       </div>
-      <div class="result-divider"></div>
-      <div class="result-section">
-        <p class="section-tag"><span class="section-icon">⚡</span>地雷ポイント</p>
-        <p class="section-text" id="r-land"></p>
-      </div>
-      <div class="result-divider"></div>
-      <div class="result-section">
-        <p class="section-tag"><span class="section-icon">💡</span>コミュニケーション指南</p>
-        <p class="section-text" id="r-guide"></p>
-      </div>
-      <div class="result-footer">
-        <button class="btn-retry-out" onclick="restart()">もう一度診断する</button>
+      <div class="r-share">
+        <button class="btn-copy" id="btn-copy" onclick="copyResult()">📋 結果をコピーしてLINEで共有</button>
+        <button class="btn-retry" onclick="restart()">もう一度診断する</button>
+        <p class="share-note">コピーしてそのままLINEに貼り付けられます</p>
       </div>
     </div>
   </div>
@@ -428,371 +331,237 @@
 const SUPABASE_URL = '__SUPABASE_URL__';
 const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 const configured = !SUPABASE_URL.startsWith('__');
-
-function sbFetch(path, opts = {}) {
-  return fetch(SUPABASE_URL + '/rest/v1/' + path, {
-    ...opts,
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json',
-      ...(opts.headers || {})
-    }
-  });
+function sbFetch(path, opts={}) {
+  return fetch(SUPABASE_URL+'/rest/v1/'+path, { ...opts, headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization':'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json', ...(opts.headers||{}) } });
 }
 
-/* ── CATEGORY DATA ── */
+/* ── CATEGORIES ── */
 const CATS = [null,
-  { emoji: '⏰', name: '時間の共有', hint: '「常に一緒」vs「1人の時間も必要」' },
-  { emoji: '💼', name: '仕事の優先度', hint: '「仕事優先」vs「パートナー最優先」' },
-  { emoji: '🤝', name: '協力のスタンス', hint: '「なんでも手伝う」vs「別々にこなす」' },
-  { emoji: '💬', name: 'コミュニケーション', hint: '「共感重視」vs「問題解決重視」' },
-  { emoji: '💰', name: 'お金の価値観', hint: '「堅実に貯める」vs「今を楽しむ」' },
-  { emoji: '🗺️', name: '将来・人生設計', hint: '「計画通りに進めたい」vs「流れを大事に」' },
+  { emoji:'⏰', name:'時間の共有',      hint:'「常に一緒」vs「1人の時間も必要」' },
+  { emoji:'💼', name:'仕事の優先度',    hint:'「仕事優先」vs「パートナー最優先」' },
+  { emoji:'🤝', name:'協力のスタンス',  hint:'「なんでも手伝う」vs「各自でこなす」' },
+  { emoji:'💬', name:'コミュニケーション', hint:'「共感重視」vs「問題解決重視」' },
+  { emoji:'💰', name:'お金の価値観',    hint:'「堅実に貯める」vs「今を楽しむ」' },
+  { emoji:'🗺️', name:'将来・人生設計',  hint:'「計画通りに」vs「流れを大事に」' },
 ];
 
 const CAT_COLORS = {
-  1: { g: 'linear-gradient(145deg, #C07C52 0%, #8E4E2B 100%)' },
-  2: { g: 'linear-gradient(145deg, #4A6A8A 0%, #2D4E6C 100%)' },
-  3: { g: 'linear-gradient(145deg, #3D7A68 0%, #225848 100%)' },
-  4: { g: 'linear-gradient(145deg, #7B5E9E 0%, #593E7C 100%)' },
-  5: { g: 'linear-gradient(145deg, #8A7340 0%, #655220 100%)' },
-  6: { g: 'linear-gradient(145deg, #3E6445 0%, #244828 100%)' },
+  1: 'linear-gradient(145deg,#B06A40 0%,#7A3E1E 100%)',
+  2: 'linear-gradient(145deg,#3E5E80 0%,#254468 100%)',
+  3: 'linear-gradient(145deg,#2E6E58 0%,#164838 100%)',
+  4: 'linear-gradient(145deg,#6A4E8C 0%,#4A2E6C 100%)',
+  5: 'linear-gradient(145deg,#7A6030 0%,#5A4010 100%)',
+  6: 'linear-gradient(145deg,#2E5438 0%,#163820 100%)',
 };
 
-/* ── CHARACTER BASES (30 combos) ── */
+/* ── CHARACTER DATA ── */
 const BASES = {
-  "1-2": {
-    name: "ともに生きるビジョナリー",
-    icon: "⏰",
-    catchphrase: "一緒にいながら、お互いの仕事も尊重できる関係が理想。",
-    happy: "帰宅後に「今日どうだった?」と聞いてもらえる。忙しくても週末は一緒に過ごしてくれる。仕事の頑張りをそばで見守ってくれている実感がある。",
-    guide: "「今日は仕事が長くなるけど、帰ったら一緒に夕飯食べよう」という一言が最高の愛情表現。仕事への理解と一緒にいる時間の確保、その両方を大切に。"
-  },
-  "1-3": {
-    name: "ともに暮らす人",
-    icon: "⏰",
-    catchphrase: "そばにいて、自然に助け合える。それが私の安心。",
-    happy: "気づいたら手を貸してくれる。「何か手伝おうか?」が自然に出てくる。家のことを一緒に分担している感覚がある。",
-    guide: "一緒にいる時間に自然なサポートを見せること。「頼んでないのにやってくれた」という体験が、深い安心感につながります。"
-  },
-  "1-4": {
-    name: "ぬくもりシェアラー",
-    icon: "⏰",
-    catchphrase: "一緒にいて、気持ちが通じ合えれば、それだけでいい。",
-    happy: "話を最後まで聞いてもらえる。「それ大変だったね」と感情に寄り添ってもらえる。特別な日でなくても、ただそばにいてくれる。",
-    guide: "まず感情を受け取ることが最優先。解決策より「そっか、それはつらかったね」が100倍効きます。一緒にいる時間に感情的なつながりを。"
-  },
-  "1-5": {
-    name: "安心の同居人",
-    icon: "⏰",
-    catchphrase: "一緒にいながら、将来も安心できる。それが私の幸せの形。",
-    happy: "将来のお金のことを一緒に考えてくれる。無駄遣いをせず、着実に生活を築いてくれる。「ずっとここにいるよ」という安定感がある。",
-    guide: "一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」という言葉が愛情に聞こえます。"
-  },
-  "1-6": {
-    name: "二人三脚の設計者",
-    icon: "⏰",
-    catchphrase: "一緒に未来を描いていくことが、私にとっての愛のかたち。",
-    happy: "「5年後、どうしたい?」という話を一緒にしてくれる。将来の計画を共に立て、そこに向かって歩んでいる実感がある。",
-    guide: "未来の話を具体的に一緒にすることが大切。「来年、旅行計画立てよう」「将来こうしたいんだけど、どう思う?」という会話が愛情表現になります。"
-  },
-  "2-1": {
-    name: "一途なプロフェッショナル",
-    icon: "💼",
-    catchphrase: "仕事は全力で。でもあなたのことも、ちゃんと見ている。",
-    happy: "仕事が忙しいときでも文句を言わずに待ってくれる。仕事終わりに「お疲れ様」と言ってくれる。仕事の話を嬉しそうに聞いてくれる。",
-    guide: "仕事への理解と応援が愛情の証明になります。「頑張ってるね」の一言と、一緒にいる時間を大切にする姿勢の組み合わせが最強です。"
-  },
-  "2-3": {
-    name: "縁の下のプロ",
-    icon: "💼",
-    catchphrase: "仕事も大事。でも、あなたへのサポートも絶対に欠かさない。",
-    happy: "仕事が忙しくても、困っているときは手を差し伸べてくれる。仕事の大変さをわかった上で、できる範囲でサポートしてくれる。",
-    guide: "仕事と協力の両方を認めることが大切。「忙しいのに手伝ってくれてありがとう」という感謝の言葉が、この人の心に一番響きます。"
-  },
-  "2-4": {
-    name: "感情を持つキャリア人",
-    icon: "💼",
-    catchphrase: "仕事の話も、気持ちの話も、全部共有したい。",
-    happy: "仕事の成功を一緒に喜んでくれる。愚痴も聞いてくれる。「よく頑張ったね」と認めてくれる。",
-    guide: "仕事の感情面に寄り添うことが鍵。「それは大変だったね」「よく頑張ったね」という共感の言葉を、仕事の話のあとに必ずセットで。"
-  },
-  "2-5": {
-    name: "堅実なキャリアビルダー",
-    icon: "💼",
-    catchphrase: "仕事で稼いで、将来を安定させる。それが私の愛情表現。",
-    happy: "お金の管理をきちんとしてくれる。仕事への理解があり、将来の安定を一緒に目指している感覚がある。",
-    guide: "仕事とお金の安定を一緒に築いていく姿勢を見せることが大切。「将来のためにここは節約しよう」という提案が愛情として伝わります。"
-  },
-  "2-6": {
-    name: "未来設計のプロフェッショナル",
-    icon: "💼",
-    catchphrase: "仕事で積み上げた力で、描いた未来を実現していく。",
-    happy: "キャリアと人生設計を連動して考えてくれる。仕事の方向性を応援してくれる。長期的な視野で物事を考えてくれる。",
-    guide: "仕事のビジョンと将来の計画を連動させた会話が響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口になります。"
-  },
-  "3-1": {
-    name: "そばにいる手",
-    icon: "🤝",
-    catchphrase: "なんでも手伝う。そして、一緒にいる時間が私の喜び。",
-    happy: "一緒に家事をしてくれる。困っていたら気づいてくれる。何もしていないただの時間も、一緒にいてくれる。",
-    guide: "日常の小さな手助けと、ただ一緒にいる時間を大切にすることが最大の愛情です。「一緒にやろう」という言葉が魔法になります。"
-  },
-  "3-2": {
-    name: "プロを支える人",
-    icon: "🤝",
-    catchphrase: "あなたの仕事を応援しながら、できる限り支えていきたい。",
-    happy: "忙しい中でも手伝ってくれる。仕事を頑張っている姿を見ながらも、サポートを忘れない。",
-    guide: "仕事への協力と感謝のセットが有効。「忙しいのに手伝ってくれてありがとう。本当に助かってる」という言葉が、この人の動力になります。"
-  },
-  "3-4": {
-    name: "心と手で支える人",
-    icon: "🤝",
-    catchphrase: "行動で支えて、言葉でも寄り添う。それが私の愛し方。",
-    happy: "話を聞きながら、実際に手も動かしてくれる。「大丈夫?」の言葉と共に助けてくれる。",
-    guide: "共感の言葉 + 具体的な行動のセットが最強。「それは辛かったね。じゃあ一緒にやろう」という流れが理想です。"
-  },
-  "3-5": {
-    name: "堅実なサポーター",
-    icon: "🤝",
-    catchphrase: "手伝うことと、将来の安心。どちらも大切にしていきたい。",
-    happy: "日常のサポートをしてくれながら、将来の備えも一緒に考えてくれる。堅実に生活を支えてくれる。",
-    guide: "日常の協力と将来の計画を並行して見せることが大切。「今日も手伝うね。あと来月の家計、一緒に見直そう」という提案が愛情になります。"
-  },
-  "3-6": {
-    name: "先を見据えたサポーター",
-    icon: "🤝",
-    catchphrase: "今日の支えが、明日の計画につながっている。",
-    happy: "将来を見据えながら手伝ってくれる。「これをしておけば後で楽になるよ」と先読みしてサポートしてくれる。",
-    guide: "サポートを未来への投資として語ることが響きます。「今こうしておけば後が楽だから、一緒にやろう」という視点が愛情として伝わります。"
-  },
-  "4-1": {
-    name: "ぬくもりの共鳴者",
-    icon: "💬",
-    catchphrase: "気持ちを分かち合いながら、一緒にいることが私の幸せ。",
-    happy: "話を最後まで聞きながら、一緒にいてくれる。何もしなくても、そばにいてくれる安心感。感情を否定せず受け取ってくれる。",
-    guide: "感情を受け取りながら一緒にいる時間を作ることが最優先。「今日は何もしなくていいから、ただ一緒にいよう」という提案が最大の愛情です。"
-  },
-  "4-2": {
-    name: "感情を持つプロフェッショナル",
-    icon: "💬",
-    catchphrase: "仕事への情熱と、気持ちを大切にする心。どちらも私の一部。",
-    happy: "仕事の話を感情ごと聞いてくれる。「大変だったね」と言いながら、仕事も応援してくれる。",
-    guide: "仕事の話に感情的な共感を加えることが大切。成果より「それは頑張ったね」という感情への返しが先。その後で仕事の話をすると伝わります。"
-  },
-  "4-3": {
-    name: "共感する行動派",
-    icon: "💬",
-    catchphrase: "気持ちに寄り添いながら、行動でも支えたい。",
-    happy: "話を聞いてくれて、実際に手伝ってもくれる。「わかるよ」と言いながら一緒に動いてくれる。",
-    guide: "共感の言葉と具体的な手助けのセットが効果的。「そっか、大変だったね。じゃあ私が◯◯やるよ」という流れがこの人の心に刺さります。"
-  },
-  "4-5": {
-    name: "感情の安全基地",
-    icon: "💬",
-    catchphrase: "気持ちの安心と、生活の安定。両方あってこそ、幸せを感じられる。",
-    happy: "感情を受け止めてくれながら、将来の安心も一緒に考えてくれる。感情的サポートと経済的安定の両立をしてくれる。",
-    guide: "感情的サポートと安定の両立を見せることが鍵。まず共感して、安心させてから将来の話をする順番を守りましょう。"
-  },
-  "4-6": {
-    name: "感情で未来を彩る人",
-    icon: "💬",
-    catchphrase: "気持ちを大切にしながら、一緒に未来を描いていきたい。",
-    happy: "将来の話を感情豊かにしてくれる。「これ楽しそう!」「こうなったらいいね」という温度のある計画を一緒に立ててくれる。",
-    guide: "未来の話を感情の温度を持って語ることが大切。「将来こうなりたいんだけど、どう思う?」という感情を乗せた問いかけが、この人との会話を豊かにします。"
-  },
-  "5-1": {
-    name: "安心をつくる同居人",
-    icon: "💰",
-    catchphrase: "堅実な生活の中で、一緒にいる時間を積み重ねていく。",
-    happy: "一緒にいながら、将来の安心を一緒に作ってくれる。無駄遣いをしない。コツコツ貯めている姿勢がある。",
-    guide: "一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」という言葉が愛情に聞こえます。"
-  },
-  "5-2": {
-    name: "堅実なキャリアパートナー",
-    icon: "💰",
-    catchphrase: "仕事で稼ぎ、しっかり管理する。それが私の愛情表現。",
-    happy: "仕事も頑張りながら、お金の管理もきちんとしてくれる。将来の経済的安定を一緒に目指してくれる。",
-    guide: "仕事への取り組みと財務管理の姿勢を見せることが愛情の証明。「今月どのくらい使ったか確認しよう」という提案が、信頼感につながります。"
-  },
-  "5-3": {
-    name: "実務の守り人",
-    icon: "💰",
-    catchphrase: "手伝い合いながら、着実に将来を積み上げていく。",
-    happy: "日常の協力をしてくれながら、財務面でも堅実でいてくれる。一緒に節約を楽しんでくれる。",
-    guide: "協力と節約をセットにして見せることが効果的。「一緒に料理しながら外食費も減らそう」という具体的な提案がこの人の心をつかみます。"
-  },
-  "5-4": {
-    name: "安心できる聞き手",
-    icon: "💰",
-    catchphrase: "しっかりした基盤があるから、心から気持ちを話せる。",
-    happy: "お金の心配がない安心感の中で、感情的な話もしっかり聞いてくれる。「大丈夫、何とかなるよ」と感情的にも財務的にも安心させてくれる。",
-    guide: "安定と共感の両方を提供することが大切。まず「お金のことは心配しなくていい」という安心感を作り、その上で感情的なサポートをすると信頼が深まります。"
-  },
-  "5-6": {
-    name: "人生設計の実務家",
-    icon: "💰",
-    catchphrase: "しっかりした計画と、堅実なお金の管理。それが幸せへの道。",
-    happy: "将来の計画を具体的な数字とともに立ててくれる。「老後のためにこれだけ貯めよう」という具体的な計画がある。",
-    guide: "計画とお金を連動させた会話が響きます。「10年後にはこうしたい。そのためには毎月◯万円貯めよう」という具体的なロードマップを一緒に作りましょう。"
-  },
-  "6-1": {
-    name: "未来へ共に歩む人",
-    icon: "🗺️",
-    catchphrase: "一緒に将来を描きながら、今も一緒にいたい。",
-    happy: "将来の話を一緒にしながら、今日も一緒に過ごしてくれる。「老後、どこに住もうか」なんて話を笑いながらできる関係。",
-    guide: "未来の話と今日の時間の両方を大切にすることが鍵。「今日も一緒にいながら、将来の話もしよう」という自然なつながりを意識して。"
-  },
-  "6-2": {
-    name: "ビジョナリーワーカー",
-    icon: "🗺️",
-    catchphrase: "仕事のキャリアと人生の計画は、セットで考えていきたい。",
-    happy: "キャリアと人生設計を連動して考えてくれる。仕事の方向性を応援してくれる。長期的な視野で物事を考えてくれる。",
-    guide: "仕事の話を長期ビジョンと結びつけて語ることが響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口になります。"
-  },
-  "6-3": {
-    name: "計画的なサポーター",
-    icon: "🗺️",
-    catchphrase: "先を見越して支える。それが私の愛し方。",
-    happy: "将来を考えた上で手伝ってくれる。「後で楽になるように今やっておこう」と先読みしてサポートしてくれる。",
-    guide: "サポートを未来への投資として見せることが大切。「将来の◯◯のために、今からこれをやっておこう」という提案が愛情として伝わります。"
-  },
-  "6-4": {
-    name: "感情で未来を描く人",
-    icon: "🗺️",
-    catchphrase: "将来の夢を、気持ちを込めて一緒に語り合いたい。",
-    happy: "将来の話を感情豊かにしてくれる。「これ楽しそう!やろうよ」という温度感で計画を立ててくれる。",
-    guide: "未来の計画を感情の言葉で語ることが大切。「こうなったら楽しいね」「あそこに行きたいね」という感情を乗せた未来の話が、この人の心に火をつけます。"
-  },
-  "6-5": {
-    name: "人生設計のパートナー",
-    icon: "🗺️",
-    catchphrase: "しっかりとした計画と、それを支えるお金の管理。人生は設計してこそ。",
-    happy: "将来の計画を具体的に立ててくれる。お金の計画も含めた現実的なロードマップがある。",
-    guide: "計画と財務管理をセットで語ることが最も響きます。「5年後にはこうしたい。そのためのお金の計画を一緒に立てよう」という具体的な対話を大切に。"
-  },
+  "1-2":{ name:"ともに生きるビジョナリー", icon:"⏰", catch:"一緒にいながら、お互いの仕事も尊重できる関係が理想。",
+    happy:"帰宅後に「今日どうだった?」と聞いてもらえること。忙しくても週末は一緒に過ごしてくれること。仕事の頑張りをそばで見守ってくれている実感があること。",
+    guide:"「今日は仕事が長くなるけど、帰ったら一緒に夕飯食べよう」の一言が最高の愛情表現。仕事への理解 × 一緒にいる時間の確保、この両立がすべてです。" },
+  "1-3":{ name:"ともに暮らす人", icon:"⏰", catch:"そばにいて、自然に助け合える。それが私の安心のかたち。",
+    happy:"気づいたら手を貸してくれること。「何か手伝おうか?」が自然に出てくること。家のことを一緒に分担している感覚があること。",
+    guide:"一緒にいる時間に自然なサポートを見せることがすべて。「頼んでないのにやってくれた」という体験が、深い安心感につながります。" },
+  "1-4":{ name:"ぬくもりシェアラー", icon:"⏰", catch:"一緒にいて、気持ちが通じ合えれば、それだけでいい。",
+    happy:"話を最後まで聞いてもらえること。「それ大変だったね」と感情に寄り添ってもらえること。特別な日でなくても、ただそばにいてくれること。",
+    guide:"まず感情を受け取ることが最優先。解決策より「そっか、それはつらかったね」が100倍効きます。一緒にいる時間に感情的なつながりを。" },
+  "1-5":{ name:"安心の同居人", icon:"⏰", catch:"一緒にいながら、将来も安心できる。それが私の幸せの形。",
+    happy:"将来のお金のことを一緒に考えてくれること。無駄遣いをせず、着実に生活を築いてくれること。「ずっとここにいるよ」という安定感があること。",
+    guide:"一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」が愛情に聞こえます。" },
+  "1-6":{ name:"二人三脚の設計者", icon:"⏰", catch:"一緒に未来を描いていくことが、私にとっての愛のかたち。",
+    happy:"「5年後、どうしたい?」という話を一緒にしてくれること。将来の計画を共に立て、そこに向かって歩んでいる実感があること。",
+    guide:"未来の話を具体的に一緒にすることが大切。「来年どこ行こうか」「将来こうしたいんだけど、どう思う?」という会話が愛情表現になります。" },
+
+  "2-1":{ name:"一途なプロフェッショナル", icon:"💼", catch:"仕事は全力で。でもあなたのことも、ちゃんと見ている。",
+    happy:"仕事が忙しいときでも文句を言わずに待ってくれること。仕事終わりに「お疲れ様」と言ってくれること。仕事の話を嬉しそうに聞いてくれること。",
+    guide:"仕事への理解と応援が愛情の証明になります。「頑張ってるね」の一言と、一緒にいる時間を大切にする姿勢の組み合わせが最強です。" },
+  "2-3":{ name:"縁の下のプロ", icon:"💼", catch:"仕事も大事。でも、あなたへのサポートも絶対に欠かさない。",
+    happy:"仕事が忙しくても、困っているときは手を差し伸べてくれること。仕事の大変さをわかった上で、できる範囲でサポートしてくれること。",
+    guide:"仕事と協力の両方を認めることが大切。「忙しいのに手伝ってくれてありがとう」という感謝の言葉が、この人の心に一番響きます。" },
+  "2-4":{ name:"感情を持つキャリア人", icon:"💼", catch:"仕事の話も、気持ちの話も、全部共有したい。",
+    happy:"仕事の成功を一緒に喜んでくれること。愚痴を聞いてくれること。「よく頑張ったね」と認めてくれること。",
+    guide:"仕事の感情面に寄り添うことが鍵。「それは大変だったね」「よく頑張ったね」という共感の言葉を、仕事の話のあとに必ずセットで。" },
+  "2-5":{ name:"堅実なキャリアビルダー", icon:"💼", catch:"仕事で稼いで、将来を安定させる。それが私の愛情表現。",
+    happy:"お金の管理をきちんとしてくれること。仕事への理解があり、将来の安定を一緒に目指している感覚があること。",
+    guide:"仕事とお金の安定を一緒に築いていく姿勢を見せることが大切。「将来のためにここは節約しよう」という提案が愛情として伝わります。" },
+  "2-6":{ name:"未来設計のプロフェッショナル", icon:"💼", catch:"仕事で積み上げた力で、描いた未来を実現していく。",
+    happy:"キャリアと人生設計を連動して考えてくれること。仕事の方向性を応援してくれること。長期的な視野で物事を考えてくれること。",
+    guide:"仕事のビジョンと将来の計画を連動させた会話が響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口。" },
+
+  "3-1":{ name:"そばにいる手", icon:"🤝", catch:"なんでも手伝う。そして、一緒にいる時間が私の喜び。",
+    happy:"一緒に家事をしてくれること。困っていたら気づいてくれること。何もしていないただの時間も、一緒にいてくれること。",
+    guide:"日常の小さな手助けと、ただ一緒にいる時間を大切にすることが最大の愛情です。「一緒にやろう」という言葉が魔法になります。" },
+  "3-2":{ name:"プロを支える人", icon:"🤝", catch:"あなたの仕事を応援しながら、できる限り支えていきたい。",
+    happy:"忙しい中でも手伝ってくれること。仕事を頑張っている姿を見ながらも、サポートを忘れないこと。",
+    guide:"仕事への協力と感謝のセットが有効。「忙しいのに手伝ってくれてありがとう。本当に助かってる」という言葉が、この人の動力になります。" },
+  "3-4":{ name:"心と手で支える人", icon:"🤝", catch:"行動で支えて、言葉でも寄り添う。それが私の愛し方。",
+    happy:"話を聞きながら、実際に手も動かしてくれること。「大丈夫?」の言葉と共に助けてくれること。",
+    guide:"共感の言葉 + 具体的な行動のセットが最強。「それは辛かったね。じゃあ一緒にやろう」という流れが理想です。" },
+  "3-5":{ name:"堅実なサポーター", icon:"🤝", catch:"手伝うことと、将来の安心。どちらも大切にしていきたい。",
+    happy:"日常のサポートをしてくれながら、将来の備えも一緒に考えてくれること。堅実に生活を支えてくれること。",
+    guide:"日常の協力と将来の計画を並行して見せることが大切。「今日も手伝うね。あと来月の家計、一緒に見直そう」という提案が愛情になります。" },
+  "3-6":{ name:"先を見据えたサポーター", icon:"🤝", catch:"今日の支えが、明日の計画につながっている。",
+    happy:"将来を見据えながら手伝ってくれること。「これをしておけば後で楽になるよ」と先読みしてサポートしてくれること。",
+    guide:"サポートを未来への投資として語ることが響きます。「今こうしておけば後が楽だから、一緒にやろう」という視点が愛情として伝わります。" },
+
+  "4-1":{ name:"ぬくもりの共鳴者", icon:"💬", catch:"気持ちを分かち合いながら、一緒にいることが私の幸せ。",
+    happy:"話を最後まで聞きながら、一緒にいてくれること。何もしなくても、そばにいてくれる安心感。感情を否定せず受け取ってくれること。",
+    guide:"感情を受け取りながら一緒にいる時間を作ることが最優先。「今日は何もしなくていいから、ただ一緒にいよう」という提案が最大の愛情です。" },
+  "4-2":{ name:"感情を持つプロフェッショナル", icon:"💬", catch:"仕事への情熱と、気持ちを大切にする心。どちらも私の一部。",
+    happy:"仕事の話を感情ごと聞いてくれること。「大変だったね」と言いながら、仕事も応援してくれること。",
+    guide:"仕事の話に感情的な共感を加えることが大切。成果より「それは頑張ったね」という感情への返しが先。その後で仕事の話をすると伝わります。" },
+  "4-3":{ name:"共感する行動派", icon:"💬", catch:"気持ちに寄り添いながら、行動でも支えたい。",
+    happy:"話を聞いてくれて、実際に手伝ってもくれること。「わかるよ」と言いながら一緒に動いてくれること。",
+    guide:"共感の言葉と具体的な手助けのセットが効果的。「そっか、大変だったね。じゃあ私が◯◯やるよ」という流れがこの人の心に刺さります。" },
+  "4-5":{ name:"感情の安全基地", icon:"💬", catch:"気持ちの安心と、生活の安定。両方あってこそ、幸せを感じられる。",
+    happy:"感情を受け止めてくれながら、将来の安心も一緒に考えてくれること。感情的サポートと経済的安定の両立をしてくれること。",
+    guide:"感情的サポートと安定の両立を見せることが鍵。まず共感して、安心させてから将来の話をする順番を守りましょう。" },
+  "4-6":{ name:"感情で未来を彩る人", icon:"💬", catch:"気持ちを大切にしながら、一緒に未来を描いていきたい。",
+    happy:"将来の話を感情豊かにしてくれること。「これ楽しそう!」「こうなったらいいね」という温度のある計画を一緒に立ててくれること。",
+    guide:"未来の話を感情の温度を持って語ることが大切。「将来こうなりたいんだけど、どう思う?」という感情を乗せた問いかけが、この人との会話を豊かにします。" },
+
+  "5-1":{ name:"安心をつくる同居人", icon:"💰", catch:"堅実な生活の中で、一緒にいる時間を積み重ねていく。",
+    happy:"一緒にいながら、将来の安心を一緒に作ってくれること。無駄遣いをしないこと。コツコツ貯めている姿勢があること。",
+    guide:"一緒にいる時間と財務の安定のセットが安心感を生みます。「今日も節約できたね。コツコツ積み上げていこう」という言葉が愛情に聞こえます。" },
+  "5-2":{ name:"堅実なキャリアパートナー", icon:"💰", catch:"仕事で稼ぎ、しっかり管理する。それが私の愛情表現。",
+    happy:"仕事も頑張りながら、お金の管理もきちんとしてくれること。将来の経済的安定を一緒に目指してくれること。",
+    guide:"仕事への取り組みと財務管理の姿勢を見せることが愛情の証明。「今月どのくらい使ったか確認しよう」という提案が信頼感につながります。" },
+  "5-3":{ name:"実務の守り人", icon:"💰", catch:"手伝い合いながら、着実に将来を積み上げていく。",
+    happy:"日常の協力をしてくれながら、財務面でも堅実でいてくれること。一緒に節約を楽しんでくれること。",
+    guide:"協力と節約をセットにして見せることが効果的。「一緒に料理しながら外食費も減らそう」という具体的な提案がこの人の心をつかみます。" },
+  "5-4":{ name:"安心できる聞き手", icon:"💰", catch:"しっかりした基盤があるから、心から気持ちを話せる。",
+    happy:"お金の心配がない安心感の中で、感情的な話もしっかり聞いてくれること。感情的にも財務的にも安心させてくれること。",
+    guide:"安定と共感の両方を提供することが大切。まず「お金のことは心配しなくていい」という安心感を作り、その上で感情的なサポートをすると信頼が深まります。" },
+  "5-6":{ name:"人生設計の実務家", icon:"💰", catch:"しっかりした計画と、堅実なお金の管理。それが幸せへの道。",
+    happy:"将来の計画を具体的な数字とともに立ててくれること。「老後のためにこれだけ貯めよう」という具体的な計画があること。",
+    guide:"計画とお金を連動させた会話が響きます。「10年後にはこうしたい。そのためには毎月◯万円貯めよう」という具体的なロードマップを一緒に作りましょう。" },
+
+  "6-1":{ name:"未来へ共に歩む人", icon:"🗺️", catch:"一緒に将来を描きながら、今も一緒にいたい。",
+    happy:"将来の話を一緒にしながら、今日も一緒に過ごしてくれること。「老後、どこに住もうか」なんて話を笑いながらできる関係。",
+    guide:"未来の話と今日の時間の両方を大切にすることが鍵。「今日も一緒にいながら、将来の話もしよう」という自然なつながりを意識して。" },
+  "6-2":{ name:"ビジョナリーワーカー", icon:"🗺️", catch:"仕事のキャリアと人生の計画は、セットで考えていきたい。",
+    happy:"キャリアと人生設計を連動して考えてくれること。仕事の方向性を応援してくれること。長期的な視野で物事を考えてくれること。",
+    guide:"仕事の話を長期ビジョンと結びつけて語ることが響きます。「今の仕事、将来にどうつながってると思う?」という問いかけが深い会話の入り口になります。" },
+  "6-3":{ name:"計画的なサポーター", icon:"🗺️", catch:"先を見越して支える。それが私の愛し方。",
+    happy:"将来を考えた上で手伝ってくれること。「後で楽になるように今やっておこう」と先読みしてサポートしてくれること。",
+    guide:"サポートを未来への投資として見せることが大切。「将来の◯◯のために、今からこれをやっておこう」という提案が愛情として伝わります。" },
+  "6-4":{ name:"感情で未来を描く人", icon:"🗺️", catch:"将来の夢を、気持ちを込めて一緒に語り合いたい。",
+    happy:"将来の話を感情豊かにしてくれること。「これ楽しそう!やろうよ」という温度感で計画を立ててくれること。",
+    guide:"未来の計画を感情の言葉で語ることが大切。「こうなったら楽しいね」「あそこに行きたいね」という感情を乗せた未来の話が、この人の心に火をつけます。" },
+  "6-5":{ name:"人生設計のパートナー", icon:"🗺️", catch:"しっかりとした計画と、それを支えるお金の管理。人生は設計してこそ。",
+    happy:"将来の計画を具体的に立ててくれること。お金の計画も含めた現実的なロードマップがあること。",
+    guide:"計画と財務管理をセットで語ることが最も響きます。「5年後にはこうしたい。そのためのお金の計画を一緒に立てよう」という具体的な対話を大切に。" },
 };
 
-/* ── LANDMINE CONTENT (by bottom category) ── */
 const LANDMINES = {
-  1: '「一緒にいる時間」を完全に後回しにされること。連絡もまばら、いつも別行動、共に過ごす時間が最低限な関係。',
-  2: '仕事への理解が全くないこと。頑張りを認めず、繁忙期にも配慮なく干渉し続けること。',
-  3: '困っていても完全に素知らぬ顔。何も手伝わず、サポートしようとする気配が一切感じられないこと。',
-  4: '感情を全部論理で返されること。話を途中で遮って解決策だけ言う、「で、何が言いたいの?」という反応。',
-  5: 'お金を無計画に使い続けること。「何とかなる」という根拠のない楽観で、将来のお金を真剣に考えない姿勢。',
-  6: '将来の話を完全に避けること。「その時はその時」「考えすぎ」と言われ、一切の計画や展望を共有しない生き方。',
+  1:'「一緒にいる時間」を完全に後回しにされること。連絡もまばら、いつも別行動、共に過ごす時間が最低限な関係は耐えられない。',
+  2:'仕事への理解が全くないこと。頑張りを認めず、繁忙期にも配慮なく割り込んでくること。',
+  3:'困っていても完全に素知らぬ顔。何も手伝わず、サポートしようとする気配が一切感じられないこと。',
+  4:'感情を全部論理で返されること。話を途中で遮って解決策だけ言う、「で、何が言いたいの?」という反応。',
+  5:'お金を無計画に使い続けること。「何とかなる」という根拠のない楽観で、将来のお金を真剣に考えない姿勢。',
+  6:'将来の話を完全に避けること。「その時はその時」「考えすぎ」と言われ、一切の計画や展望を共有しない生き方。',
 };
 
-/* ── APP STATE ── */
-let sel = [0, 0, 0];  // [top1, top2, bottom]
-
-function getCharacter(t1, t2, bot) {
-  const base = BASES[`${t1}-${t2}`];
-  if (!base) return null;
-  return { ...base, landmine: LANDMINES[bot] };
+/* ── PATTERN NUMBER (1〜120) ── */
+const PATTERN_NUM = {};
+let _n = 0;
+for(let a=1;a<=6;a++) for(let b=1;b<=6;b++) for(let c=1;c<=6;c++) {
+  if(a!==b && a!==c && b!==c) PATTERN_NUM[`${a}-${b}-${c}`] = ++_n;
 }
 
-/* ── SCREEN MANAGEMENT ── */
+/* ── STATE ── */
+let sel = [0,0,0];
+let _curChar = null;
+
+/* ── HELPERS ── */
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  requestAnimationFrame(() => {
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  requestAnimationFrame(()=>{ document.getElementById(id).classList.add('active'); window.scrollTo({top:0}); });
+}
+function buildButtons(containerId, ids, onClick) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  ids.forEach((id,i)=>{
+    const c = CATS[id];
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.style.animationDelay = i*55+'ms';
+    btn.innerHTML = `<span class="cat-em">${c.emoji}</span><div class="cat-info"><div class="cat-nm">${c.name}</div><div class="cat-hn">${c.hint}</div></div><span class="cat-arr">›</span>`;
+    btn.onclick = ()=>onClick(id);
+    el.appendChild(btn);
   });
 }
 
-function startDiag() {
-  sel = [0, 0, 0];
-  buildList1();
-  showScreen('s-step1');
-}
-
+/* ── FLOW ── */
+function startDiag() { sel=[0,0,0]; buildButtons('list1',[1,2,3,4,5,6],pickTop1); showScreen('s-step1'); }
 function goIntro() { showScreen('s-intro'); }
+function goStep1() { buildButtons('list1',[1,2,3,4,5,6],pickTop1); showScreen('s-step1'); }
+function goStep2() { buildButtons('list2',[1,2,3,4,5,6].filter(x=>x!==sel[0]),pickTop2); showScreen('s-step2'); }
 
-function buildList1() {
-  const el = document.getElementById('list1');
-  el.innerHTML = '';
-  [1,2,3,4,5,6].forEach((id, i) => {
-    const c = CATS[id];
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.style.animationDelay = `${i * 60}ms`;
-    btn.innerHTML = `<span class="cat-emoji">${c.emoji}</span><div class="cat-text"><div class="cat-name">${c.name}</div><div class="cat-hint">${c.hint}</div></div>`;
-    btn.onclick = () => { sel[0] = id; buildList2(); showScreen('s-step2'); };
-    el.appendChild(btn);
-  });
-}
-
-function buildList2() {
-  const el = document.getElementById('list2');
-  el.innerHTML = '';
-  let j = 0;
-  [1,2,3,4,5,6].filter(id => id !== sel[0]).forEach((id, i) => {
-    const c = CATS[id];
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.style.animationDelay = `${i * 60}ms`;
-    btn.innerHTML = `<span class="cat-emoji">${c.emoji}</span><div class="cat-text"><div class="cat-name">${c.name}</div><div class="cat-hint">${c.hint}</div></div>`;
-    btn.onclick = () => { sel[1] = id; buildList3(); showScreen('s-step3'); };
-    el.appendChild(btn);
-  });
-}
-
-function buildList3() {
-  const el = document.getElementById('list3');
-  el.innerHTML = '';
-  [1,2,3,4,5,6].filter(id => id !== sel[0] && id !== sel[1]).forEach((id, i) => {
-    const c = CATS[id];
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.style.animationDelay = `${i * 60}ms`;
-    btn.innerHTML = `<span class="cat-emoji">${c.emoji}</span><div class="cat-text"><div class="cat-name">${c.name}</div><div class="cat-hint">${c.hint}</div></div>`;
-    btn.onclick = () => { sel[2] = id; showResult(); };
-    el.appendChild(btn);
-  });
-}
-
-function goStep1() { buildList1(); showScreen('s-step1'); }
-function goStep2() { buildList2(); showScreen('s-step2'); }
+function pickTop1(id) { sel[0]=id; buildButtons('list2',[1,2,3,4,5,6].filter(x=>x!==id),pickTop2); showScreen('s-step2'); }
+function pickTop2(id) { sel[1]=id; buildButtons('list3',[1,2,3,4,5,6].filter(x=>x!==sel[0]&&x!==id),pickBottom); showScreen('s-step3'); }
+function pickBottom(id) { sel[2]=id; showResult(); }
 
 function showResult() {
-  const [t1, t2, bot] = sel;
-  const ch = getCharacter(t1, t2, bot);
-  if (!ch) return;
+  const [t1,t2,bot] = sel;
+  const base = BASES[`${t1}-${t2}`];
+  if(!base) return;
+  _curChar = { ...base, landmine: LANDMINES[bot], t1, t2, bot };
 
-  const color = CAT_COLORS[t1];
-  document.getElementById('r-header').style.background = color.g;
-  document.getElementById('r-bg-icon').textContent = ch.icon;
-  document.getElementById('r-name').textContent = ch.name;
-  document.getElementById('r-catch').textContent = '「' + ch.catchphrase + '」';
-  document.getElementById('r-happy').textContent = ch.happy;
-  document.getElementById('r-land').textContent = ch.landmine;
-  document.getElementById('r-guide').textContent = ch.guide;
+  document.getElementById('r-head').style.background = CAT_COLORS[t1];
+  document.getElementById('r-icon').textContent = base.icon;
+  document.getElementById('r-num').textContent = `No.${PATTERN_NUM[`${t1}-${t2}-${bot}`]} / 120`;
+  document.getElementById('r-name').textContent = base.name;
+  document.getElementById('r-catch').textContent = base.catch;
+  document.getElementById('r-happy').textContent = base.happy;
+  document.getElementById('r-land').textContent = LANDMINES[bot];
+  document.getElementById('r-guide').textContent = base.guide;
 
-  const combo = document.getElementById('r-combo');
-  combo.innerHTML = `
-    <span class="combo-chip rank1">1位 ${CATS[t1].emoji}${CATS[t1].name}</span>
-    <span class="combo-chip">2位 ${CATS[t2].emoji}${CATS[t2].name}</span>
-    <span class="combo-chip">地雷 ${CATS[bot].emoji}${CATS[bot].name}</span>
+  const tags = document.getElementById('r-tags');
+  tags.innerHTML = `
+    <span class="rh-tag t1">1位 ${CATS[t1].emoji} ${CATS[t1].name}</span>
+    <span class="rh-tag">2位 ${CATS[t2].emoji} ${CATS[t2].name}</span>
+    <span class="rh-tag">地雷 ${CATS[bot].emoji} ${CATS[bot].name}</span>
   `;
 
+  const btn = document.getElementById('btn-copy');
+  btn.textContent = '📋 結果をコピーしてLINEで共有';
+  btn.classList.remove('copied');
+
   showScreen('s-result');
-  recordResult(t1, t2, bot);
+  if(configured) sbFetch('blueprint_results',{ method:'POST', headers:{'Prefer':'return=minimal'}, body:JSON.stringify({top1:t1,top2:t2,bottom:bot,pattern:`${t1}-${t2}-${bot}`}) }).catch(()=>{});
+}
+
+function copyResult() {
+  if(!_curChar) return;
+  const {t1,t2,bot,name,catch:cat,happy,landmine} = _curChar;
+  const text = [
+    '【プロジェクト・ブループリント診断】',
+    '',
+    `✨ ${name}`,
+    `No.${PATTERN_NUM[`${t1}-${t2}-${bot}`]} / 120`,
+    '',
+    `「${cat}」`,
+    '',
+    `🌟 喜ぶポイント`,
+    happy,
+    '',
+    `⚡ 地雷ポイント`,
+    landmine,
+    '',
+    `▶ あなたも診断してみて`,
+    'https://kantei-app-gamma.vercel.app/blueprint/',
+  ].join('\n');
+
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('btn-copy');
+    btn.textContent = '✓ コピーしました！LINEに貼り付けて';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='📋 結果をコピーしてLINEで共有'; btn.classList.remove('copied'); }, 3000);
+  }).catch(()=>alert('コピーできませんでした。手動でコピーしてください。'));
 }
 
 function restart() { startDiag(); }
-
-async function recordResult(t1, t2, bot) {
-  if (!configured) return;
-  try {
-    await sbFetch('blueprint_results', {
-      method: 'POST',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ top1: t1, top2: t2, bottom: bot, pattern: `${t1}-${t2}-${bot}` })
-    });
-  } catch(e) {}
-}
 </script>
 </body>
 </html>
