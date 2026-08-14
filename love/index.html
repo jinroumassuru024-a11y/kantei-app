@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>パートナー編・恋愛価値観診断</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── 変数 ── */
+    :root {
+      --bg: #FAF7F4;
+      --white: #FFFFFF;
+      --ink: #2C2924;
+      --mid: #6B635B;
+      --light: #A09890;
+      --border: #EAE4DC;
+      --accent: #D97460;
+      --accent-light: #FDF0ED;
+      --accent2: #7B9EC8;
+      --radius: 16px;
+      --shadow: 0 2px 20px rgba(44,41,36,.08);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100svh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 0 60px;
+    }
+
+    /* ── スクリーン制御 ── */
+    .screen { display: none; width: 100%; max-width: 480px; }
+    .screen.active { display: block; animation: fade-up .35s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+    /* ── 共通カード ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px 24px;
+      margin: 16px;
+    }
+
+    /* ── TOP画面 ── */
+    .top-hero {
+      background: linear-gradient(160deg, #FFF0EC 0%, #EEF4FF 100%);
+      padding: 56px 24px 40px;
+      text-align: center;
+    }
+    .top-icon { font-size: 52px; display: block; margin-bottom: 20px; }
+    .top-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      color: var(--accent);
+      background: var(--accent-light);
+      border-radius: 100px;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+    .top-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 14px;
+      letter-spacing: .02em;
+    }
+    .top-desc {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.85;
+    }
+    .top-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .meta-item { text-align: center; }
+    .meta-n { font-size: 22px; font-weight: 700; color: var(--accent); display: block; }
+    .meta-l { font-size: 11px; color: var(--light); display: block; margin-top: 2px; }
+    .top-body { padding: 0 16px; }
+    .top-points {
+      margin: 16px 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .top-pt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.65;
+    }
+    .top-pt::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 7px; }
+    .top-note {
+      font-size: 12px;
+      color: var(--light);
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: all .18s;
+      box-shadow: 0 4px 16px rgba(217,116,96,.3);
+    }
+    .btn-primary:hover { background: #C96450; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(217,116,96,.35); }
+    .btn-primary:active { transform: scale(.98); }
+
+    /* ── 質問画面 ── */
+    .q-header {
+      padding: 20px 20px 0;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+      padding-bottom: 8px;
+    }
+    .q-progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .q-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width .4s cubic-bezier(.22,1,.36,1);
+    }
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .q-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .q-category {
+      font-size: 11px;
+      color: var(--light);
+      background: var(--border);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .q-body { padding: 16px 20px; }
+    .q-text {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.7;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .q-choices { display: flex; flex-direction: column; gap: 10px; }
+    .choice-btn {
+      width: 100%;
+      padding: 16px 20px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.6;
+      transition: all .15s cubic-bezier(.22,1,.36,1);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: choice-in .3s ease both;
+    }
+    .choice-btn:nth-child(1) { animation-delay: .04s; }
+    .choice-btn:nth-child(2) { animation-delay: .08s; }
+    .choice-btn:nth-child(3) { animation-delay: .12s; }
+    .choice-btn:nth-child(4) { animation-delay: .16s; }
+    @keyframes choice-in { from { opacity:0; transform:translateX(-6px); } to { opacity:1; transform:none; } }
+    .choice-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+    .choice-btn:active { transform: scale(.98); }
+    .choice-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .choice-label {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--light);
+      flex-shrink: 0;
+      transition: all .15s;
+    }
+    .choice-btn.selected .choice-label {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .choice-text { flex: 1; }
+    .q-footer {
+      padding: 8px 20px 16px;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .btn-back {
+      background: none;
+      border: none;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      color: var(--light);
+      cursor: pointer;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color .15s;
+    }
+    .btn-back:hover { color: var(--mid); }
+
+    /* ── 結果画面 ── */
+    .result-hero {
+      text-align: center;
+      padding: 40px 24px 28px;
+    }
+    .result-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      color: var(--accent);
+      background: var(--accent-light);
+      border-radius: 100px;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+    .result-icon { font-size: 56px; display: block; margin-bottom: 14px; }
+    .result-type-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .result-type-label {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+    .result-section {
+      margin: 16px;
+      padding: 24px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .sec-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    /* ランキングバーチャート */
+    .rank-list { display: flex; flex-direction: column; gap: 14px; }
+    .rank-item { display: flex; align-items: center; gap: 12px; }
+    .rank-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .rank-num.r1 { background: #F5C842; color: #7A5A00; }
+    .rank-num.r2 { background: #C0C8D0; color: #3A4450; }
+    .rank-num.r3 { background: #D4956A; color: #6A3A10; }
+    .rank-num.r-other { background: var(--border); color: var(--mid); }
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rank-bar-wrap {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .rank-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--accent);
+      transition: width 1s cubic-bezier(.22,1,.36,1);
+    }
+    .rank-pct {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    /* キャラクター説明 */
+    .char-desc {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.9;
+    }
+    /* 関係性・ポイントセクション */
+    .rel-block {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--bg);
+      margin-bottom: 12px;
+    }
+    .rel-block:last-child { margin-bottom: 0; }
+    .rel-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+    .rel-text {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.85;
+    }
+    /* 結果フッター */
+    .result-footer {
+      padding: 8px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-debug {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      color: var(--light);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-debug:hover { border-color: var(--mid); color: var(--mid); }
+    .btn-retry {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      color: var(--mid);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-retry:hover { border-color: var(--mid); }
+
+    /* ── デバッグ画面 ── */
+    .debug-header {
+      padding: 20px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .debug-title { font-size: 16px; font-weight: 700; }
+    .debug-close {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: var(--light);
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .debug-section { margin: 0 16px 16px; }
+    .debug-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--light);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .debug-scores { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .debug-score-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .debug-score-rank { width: 20px; font-weight: 700; color: var(--accent); }
+    .debug-score-label { flex: 1; color: var(--ink); }
+    .debug-score-val { font-weight: 700; color: var(--mid); font-size: 12px; }
+    .debug-type-id {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .debug-q-list { display: flex; flex-direction: column; gap: 8px; }
+    .debug-q-row {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.6;
+      padding: 10px;
+      background: var(--white);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .debug-q-num { font-weight: 700; color: var(--ink); }
+    .debug-q-choice { color: var(--accent); font-weight: 500; }
+    .debug-q-val { color: var(--accent2); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- ① TOP画面 -->
+<div class="screen active" id="screen-top">
+  <div class="top-hero">
+    <span class="top-icon">💑</span>
+    <span class="top-badge">パートナー編</span>
+    <h1 class="top-title">恋愛価値観診断</h1>
+    <p class="top-desc">
+      あなたがパートナーとの関係で<br>
+      本当に大切にしていることを<br>
+      言語化する診断です。
+    </p>
+    <div class="top-meta">
+      <div class="meta-item"><span class="meta-n">36</span><span class="meta-l">問</span></div>
+      <div class="meta-item"><span class="meta-n">6</span><span class="meta-l">項目</span></div>
+      <div class="meta-item"><span class="meta-n">10分</span><span class="meta-l">目安</span></div>
+    </div>
+  </div>
+  <div class="top-body">
+    <div class="card">
+      <div class="top-points">
+        <p class="top-pt">恋愛の具体的なシチュエーションで「自分ならどうするか」を選ぶだけ</p>
+        <p class="top-pt">6つの価値観の優先順位が分かる</p>
+        <p class="top-pt">「正解」のない質問なので、直感で答えてください</p>
+      </div>
+      <p class="top-note">この診断に「良い答え」「悪い答え」はありません。<br>自分に一番近いものを選んでください。</p>
+      <button class="btn-primary" onclick="startDiagnosis()">診断をはじめる →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ② 質問画面 -->
+<div class="screen" id="screen-q">
+  <div class="q-header">
+    <div class="q-progress-bar"><div class="q-progress-fill" id="q-progress-fill"></div></div>
+    <div class="q-meta">
+      <span class="q-num" id="q-num">Q1 / 36</span>
+      <span class="q-category" id="q-category"></span>
+    </div>
+  </div>
+  <div class="q-body">
+    <p class="q-text" id="q-text"></p>
+    <div class="q-choices" id="q-choices"></div>
+  </div>
+  <div class="q-footer">
+    <button class="btn-back" onclick="goBack()">← 前の質問に戻る</button>
+  </div>
+</div>
+
+<!-- ③ 結果画面 -->
+<div class="screen" id="screen-result">
+  <div class="result-hero">
+    <span class="result-badge">診断結果</span>
+    <span class="result-icon" id="r-icon"></span>
+    <p class="result-type-name" id="r-name"></p>
+    <p class="result-type-label" id="r-label"></p>
+  </div>
+
+  <div class="result-section">
+    <p class="sec-title"><span>📊</span>価値観ランキング</p>
+    <div class="rank-list" id="r-ranking"></div>
+  </div>
+
+  <div class="result-section">
+    <p class="sec-title"><span>👤</span>あなたのキャラクター</p>
+    <p class="char-desc" id="r-desc"></p>
+  </div>
+
+  <div class="result-section">
+    <p class="sec-title"><span>💞</span>関係性・ポイント</p>
+    <div class="rel-block">
+      <p class="rel-label">あなたが大切にしやすい関係性</p>
+      <p class="rel-text" id="r-rel"></p>
+    </div>
+    <div class="rel-block">
+      <p class="rel-label">長く一緒にいるためのポイント</p>
+      <p class="rel-text" id="r-tip"></p>
+    </div>
+  </div>
+
+  <div class="result-footer">
+    <button class="btn-debug" onclick="showDebug()">🔍 開発者向けデバッグ情報を見る</button>
+    <button class="btn-retry" onclick="restart()">もう一度診断する</button>
+  </div>
+</div>
+
+<!-- ④ デバッグ画面 -->
+<div class="screen" id="screen-debug">
+  <div class="debug-header">
+    <span class="debug-title">🔍 デバッグ情報</span>
+    <button class="debug-close" onclick="showScreen('screen-result')">← 結果に戻る</button>
+  </div>
+
+  <div class="debug-section">
+    <p class="debug-section-title">6項目スコア（正規化後）</p>
+    <div class="debug-scores" id="db-scores"></div>
+  </div>
+
+  <div class="debug-section">
+    <p class="debug-section-title">将来的な120タイプID（仮）</p>
+    <p class="debug-type-id" id="db-type-id"></p>
+  </div>
+
+  <div class="debug-section">
+    <p class="debug-section-title">36問 回答一覧</p>
+    <div class="debug-q-list" id="db-q-list"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   設定データ（将来変更可能な形で管理）
+════════════════════════════════════════ */
+
+// 6つの価値観
+const VALUES = [
+  { id: 1, label: '応援してほしい',      sub: '自己実現・成長・挑戦',        icon: '🌟', color: '#F5A623' },
+  { id: 2, label: '一緒に取り組んでほしい', sub: '協働・共生・生活',          icon: '🤝', color: '#5BA85A' },
+  { id: 3, label: '話を聞いてほしい',     sub: '共感・他者理解・コミュニケーション', icon: '💭', color: '#7B9EC8' },
+  { id: 4, label: '安心させてほしい',     sub: '信頼・安定・継続',            icon: '🏠', color: '#9B8EC8' },
+  { id: 5, label: '愛情を伝えてほしい',   sub: '愛情表現・つながり',          icon: '💕', color: '#D97460' },
+  { id: 6, label: '干渉しないでほしい',   sub: '自立・自己決定・個人の尊重',  icon: '🦋', color: '#7ABDA8' },
+];
+
+// 36問 ── c = [[選択肢テキスト, 価値観ID], ...]
+// 価値観ID: 1=応援 2=一緒 3=話を聞く 4=安心 5=愛情 6=干渉しない
+const QUESTIONS = [
+  // ── 成長・挑戦文脈（Q1-6）──
+  { cat: '成長・挑戦', q: '恋人が仕事や勉強で大きな目標に挑戦するとしたら、あなたが一番嬉しいのは？',
+    c: [['「あなたならできる」と信じてくれる', 1],
+        ['一緒に計画を考えてくれる', 2],
+        ['大変な気持ちを聞いてくれる', 3],
+        ['自分のペースで挑戦させてくれる', 6]] },
+
+  { cat: '成長・挑戦', q: '自分が新しいことを始めたいと話したとき、恋人にはどうしてほしい？',
+    c: [['背中を押してほしい', 1],
+        ['現実的な方法を一緒に考えてほしい', 2],
+        ['なぜやりたいのか話を聞いてほしい', 3],
+        ['口を出さず見守ってほしい', 6]] },
+
+  { cat: '成長・挑戦', q: '恋人の仕事が忙しくなり、会う時間が減ったとしたら？',
+    c: [['今は仕事を頑張る時期だと応援する', 1],
+        ['二人の時間をどう作るか相談する', 2],
+        ['寂しい気持ちを伝えて話し合う', 3],
+        ['お互い自由に過ごせるので気にならない', 6]] },
+
+  { cat: '成長・挑戦', q: '自分が失敗して落ち込んでいるとき、恋人から一番してほしいことは？',
+    c: [['「次があるよ」と前向きに励ましてほしい', 1],
+        ['次にどうするか一緒に考えてほしい', 2],
+        ['まず気持ちを聞いてほしい', 3],
+        ['必要以上に心配せず任せてほしい', 6]] },
+
+  { cat: '成長・挑戦', q: '恋人が自分の夢を理解してくれないとしたら、一番嫌なのは？',
+    c: [['「そんなこと無理」と否定されること', 1],
+        ['一緒に考える姿勢を持ってくれないこと', 2],
+        ['自分の気持ちを聞いてくれないこと', 3],
+        ['自分のことに口を出されること', 6]] },
+
+  { cat: '成長・挑戦', q: '長く付き合うパートナーに一番求めたいのは？',
+    c: [['自分の可能性を信じてくれること', 1],
+        ['人生を一緒に考えてくれること', 2],
+        ['自分の気持ちを理解してくれること', 3],
+        ['自分の選択を尊重してくれること', 6]] },
+
+  // ── 生活・協働文脈（Q7-12）──
+  { cat: '生活・協働', q: '一緒に暮らすことになったら、一番大切だと思うのは？',
+    c: [['二人で役割を考えること', 2],
+        ['お互いの仕事や夢を応援すること', 1],
+        ['日々の出来事を話すこと', 3],
+        ['お互いの時間も確保すること', 6]] },
+
+  { cat: '生活・協働', q: '二人で旅行を計画するとしたら？',
+    c: [['二人で相談して決めたい', 2],
+        ['それぞれがやりたいことを尊重したい', 6],
+        ['相手の希望を聞きながら決めたい', 3],
+        ['一緒に計画すること自体を楽しみたい', 5]] },
+
+  { cat: '生活・協働', q: '恋人が忙しくて家事ができていないとき、あなたが近いのは？',
+    c: [['自分ができることをやる', 4],
+        ['役割を一緒に見直す', 2],
+        ['相手が何に困っているか聞く', 3],
+        ['お互い自分のことは自分でする', 6]] },
+
+  { cat: '生活・協働', q: '二人で大きな買い物をするとしたら？',
+    c: [['二人で相談して決めたい', 2],
+        ['それぞれの財布や判断を尊重したい', 6],
+        ['お互いの考えを十分聞きたい', 3],
+        ['将来のことも含めて一緒に考えたい', 4]] },
+
+  { cat: '生活・協働', q: '恋人と意見が合わないとき、一番大切なのは？',
+    c: [['二人が納得できる方法を探す', 2],
+        ['それぞれの意見を尊重する', 6],
+        ['相手がどう感じているか理解する', 3],
+        ['関係が悪くならないようにする', 4]] },
+
+  { cat: '生活・協働', q: '「この人と長く一緒にいられる」と感じるのは？',
+    c: [['困ったときに一緒に解決できる', 2],
+        ['お互いの人生を尊重できる', 6],
+        ['何でも話せる', 3],
+        ['将来を一緒に考えられる', 4]] },
+
+  // ── コミュニケーション文脈（Q13-18）──
+  { cat: 'コミュニケーション', q: '仕事で嫌なことがあった日に恋人に会ったら、一番嬉しいのは？',
+    c: [['「何があったの？」と聞いてくれる', 3],
+        ['「大丈夫だよ」と安心させてくれる', 4],
+        ['「どうしたら解決できるか考えよう」と言ってくれる', 2],
+        ['何も聞かず普段通りに接してくれる', 6]] },
+
+  { cat: 'コミュニケーション', q: '自分の考えを話したとき、恋人に一番してほしいのは？',
+    c: [['最後まで話を聞いてほしい', 3],
+        ['自分の考えを信じてほしい', 1],
+        ['一緒に考えてほしい', 2],
+        ['それぞれの考えとして尊重してほしい', 6]] },
+
+  { cat: 'コミュニケーション', q: '恋人と喧嘩した後、あなたが一番必要なのは？',
+    c: [['自分の気持ちを理解してもらうこと', 3],
+        ['「大丈夫」と関係を安心させてもらうこと', 4],
+        ['これからどうするか一緒に考えること', 2],
+        ['少し一人になる時間', 6]] },
+
+  { cat: 'コミュニケーション', q: '恋人が悩みを話してきたとき、自分が一番したいのは？',
+    c: [['まず最後まで聞く', 3],
+        ['解決策を一緒に考える', 2],
+        ['励ましてあげる', 1],
+        ['相手が自分で考える時間を尊重する', 6]] },
+
+  { cat: 'コミュニケーション', q: '自分の価値観について話したとき、恋人にどう反応してほしい？',
+    c: [['「そう思うんだね」と理解してほしい', 3],
+        ['「それで大丈夫だよ」と安心させてほしい', 4],
+        ['自分の気持ちも正直に話してほしい', 5],
+        ['違っていても無理に合わせなくていいと思ってほしい', 6]] },
+
+  { cat: 'コミュニケーション', q: '長く付き合ううえで「会話」に求めるものは？',
+    c: [['気持ちを分かり合えること', 3],
+        ['不安や心配を解消できること', 4],
+        ['二人の問題を解決できること', 2],
+        ['お互いの考えを押しつけないこと', 6]] },
+
+  // ── 信頼・安定文脈（Q19-24）──
+  { cat: '信頼・安定', q: '恋人から連絡が一日来なかったら？',
+    c: [['忙しいのだろうと思って待つ', 1],
+        ['少し不安になり、一言ほしいと思う', 4],
+        ['会ったときに何かあったか聞く', 3],
+        ['特に気にしない', 6]] },
+
+  { cat: '信頼・安定', q: '恋人が異性の友人と二人で食事に行くとしたら？',
+    c: [['信頼しているので気にならない', 4],
+        ['少し不安なので事前に話してほしい', 4],
+        ['どういう関係なのか聞きたい', 3],
+        ['お互いの自由なので任せる', 6]] },
+
+  { cat: '信頼・安定', q: '将来について恋人と話すとき、一番大切なのは？',
+    c: [['二人がどうしたいのか確認できること', 4],
+        ['自分たちの人生をそれぞれ大切にできること', 6],
+        ['不安なことを話せること', 3],
+        ['一緒に具体的な計画を考えられること', 2]] },
+
+  { cat: '信頼・安定', q: '恋人から「これからもずっと一緒にいたい」と言われたら？',
+    c: [['言葉にしてもらえると安心する', 5],
+        ['自分の夢や生活も大切にしたい', 6],
+        ['そう思ってくれている理由を聞きたい', 3],
+        ['実際の行動で示してくれる方が嬉しい', 4]] },
+
+  { cat: '信頼・安定', q: '恋人との関係で一番避けたいのは？',
+    c: [['相手の気持ちが分からなくなること', 3],
+        ['お互いの生活や夢を邪魔すること', 6],
+        ['話し合えなくなること', 2],
+        ['将来が全く見えなくなること', 4]] },
+
+  { cat: '信頼・安定', q: '長く一緒にいるために一番必要だと思うのは？',
+    c: [['お互いを信じること', 4],
+        ['それぞれの人生を尊重すること', 6],
+        ['何でも話せること', 3],
+        ['困ったときに支え合うこと', 2]] },
+
+  // ── 愛情表現文脈（Q25-30）──
+  { cat: '愛情表現', q: '恋人から一番「愛されている」と感じるのは？',
+    c: [['「好き」「大切」と言葉で伝えてくれる', 5],
+        ['忙しくても時間を作ってくれる', 4],
+        ['自分の話をじっくり聞いてくれる', 3],
+        ['自分のことを信じて任せてくれる', 6]] },
+
+  { cat: '愛情表現', q: '誕生日に恋人からしてほしいことは？',
+    c: [['手紙や言葉で気持ちを伝えてほしい', 5],
+        ['一緒に特別な時間を過ごしたい', 2],
+        ['自分が喜ぶことを考えてくれたことが嬉しい', 4],
+        ['自分の好きな過ごし方を自由に選ばせてほしい', 6]] },
+
+  { cat: '愛情表現', q: '恋人と会えない期間が続いたとき、一番欲しいのは？',
+    c: [['「会いたい」「好き」と言ってくれること', 5],
+        ['次に会う予定を一緒に決めること', 2],
+        ['電話などでゆっくり話すこと', 3],
+        ['お互い無理せず自分の時間を過ごすこと', 6]] },
+
+  { cat: '愛情表現', q: '恋人から褒められるなら、どれが一番嬉しい？',
+    c: [['「あなたと一緒にいると幸せ」と言われる', 5],
+        ['「頑張っていることを尊敬している」と言われる', 1],
+        ['「あなたの気持ちを分かっているよ」と言われる', 3],
+        ['「あなたなら自分で決められる」と信頼される', 6]] },
+
+  { cat: '愛情表現', q: '恋人との関係で「愛されている」と実感する瞬間は？',
+    c: [['言葉や態度で愛情を示してくれたとき', 5],
+        ['困ったときに一緒にいてくれたとき', 4],
+        ['自分の気持ちを理解してくれたとき', 3],
+        ['自分の自由や選択を尊重してくれたとき', 6]] },
+
+  { cat: '愛情表現', q: 'あなたにとって愛情とは一番近いものは？',
+    c: [['気持ちを伝え合うこと', 5],
+        ['一緒に時間や経験を積み重ねること', 2],
+        ['相手を理解しようとすること', 3],
+        ['相手を信じて自由を尊重すること', 6]] },
+
+  // ── 自立・距離感文脈（Q31-36）──
+  { cat: '自立・距離感', q: '恋人から「今日は何してたの？」と毎日詳しく聞かれたら？',
+    c: [['気にかけてくれて嬉しい', 5],
+        ['ほどほどなら嬉しい', 4],
+        ['少し自由がなく感じる', 6],
+        ['お互いのことを細かく確認する必要はないと思う', 3]] },
+
+  { cat: '自立・距離感', q: '恋人が自分の趣味について「もっと一緒にやろう」と言ってきたら？',
+    c: [['一緒に楽しみたい', 5],
+        ['たまには一緒にやりたい', 2],
+        ['基本的には自分の趣味として楽しみたい', 6],
+        ['自分の好きなようにさせてほしい', 1]] },
+
+  { cat: '自立・距離感', q: '恋人との予定と、自分が以前から楽しみにしていた予定が重なったら？',
+    c: [['恋人との予定を優先する', 5],
+        ['お互い納得できる方法を探す', 2],
+        ['先に決まっていた予定を優先する', 1],
+        ['それぞれ別々に楽しめばいいと思う', 6]] },
+
+  { cat: '自立・距離感', q: '恋人から「もっと一緒にいる時間を増やしたい」と言われたら？',
+    c: [['できるだけ応えたい', 4],
+        ['二人でちょうどいい時間を考えたい', 2],
+        ['自分の時間も必要だと伝える', 6],
+        ['一緒にいる時間の長さより中身が大事だと思う', 3]] },
+
+  { cat: '自立・距離感', q: '恋人があなたの服装や友人関係について意見を言ってきたら？',
+    c: [['相手の意見を参考にする', 4],
+        ['まず理由を聞いて話し合う', 3],
+        ['最終的には自分で決めたい', 1],
+        ['自分の選択に口を出してほしくない', 6]] },
+
+  { cat: '自立・距離感', q: '長く付き合ううえで、あなたが一番大切にしたいのは？',
+    c: [['いつでも一緒にいられる安心感', 4],
+        ['一緒に人生を作っていく感覚', 2],
+        ['何でも話せる関係', 3],
+        ['お互いが自分らしくいられること', 6]] },
+];
+
+// 各価値観の「登場回数」を事前計算（正規化用）
+const OPP = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+QUESTIONS.forEach(q => q.c.forEach(([, v]) => OPP[v]++));
+
+// 6つのキャラクター（1位の価値観で決定）
+const CHARACTERS = {
+  1: {
+    name: '応援者タイプ（仮）',
+    icon: '🌟',
+    desc: 'あなたは、パートナーに自分の可能性を信じてほしいという気持ちが強い人です。「あなたならできる」という言葉や姿勢が、最も心の支えになります。自分の挑戦や夢に対してポジティブに関わってくれる人と、深い絆が生まれやすいです。',
+    rel: 'お互いの夢や目標を応援し合える関係。挑戦を否定されることなく、背中を押してもらえる環境が大切です。',
+    tip: '相手があなたの挑戦を応援してくれているかを確認しながら関係を築きましょう。あなたも相手の夢を積極的に応援することで、お互いが高め合えるパートナーシップになります。',
+  },
+  2: {
+    name: '共創者タイプ（仮）',
+    icon: '🤝',
+    desc: 'あなたは、二人で一緒に考え、作り上げることに喜びを感じるタイプです。生活のことも将来のことも、相談しながら決めていける関係に安心感を覚えます。一人で決めるより、一緒に決める過程を大切にします。',
+    rel: '大小さまざまなことを相談し合いながら決めていける関係。「二人で作っている感覚」があることが心地よさにつながります。',
+    tip: '「一緒に決めたい」という気持ちを素直に伝えることが大切。相手がそれぞれの判断を重視するタイプの場合は、どこまで一緒に考えるかを事前に話し合っておくとよいでしょう。',
+  },
+  3: {
+    name: '対話者タイプ（仮）',
+    icon: '💭',
+    desc: 'あなたは、気持ちを理解し合うことを関係の基盤にする人です。「聞いてもらえた」「分かってもらえた」という体験が、愛情のベースになります。話す前に結論を出されたり、感情を軽く扱われると、距離を感じやすいです。',
+    rel: '感情や考えを自由に話せる関係。まず受け止めてもらえる安心感があり、何でも話せると感じられる環境が大切です。',
+    tip: '「先に聞いてほしい」という自分のスタイルを、相手に伝えておくと誤解が減ります。相手が解決志向の場合は、「解決策より共感がほしい」と一言添えるのも効果的です。',
+  },
+  4: {
+    name: '安心感タイプ（仮）',
+    icon: '🏠',
+    desc: 'あなたは、関係の安定と信頼を何より大切にするタイプです。不安を感じたとき、相手からの安心感が大きな支えになります。将来について一緒に考えてくれる人と、長く深い関係を築きやすいです。',
+    rel: 'お互いを信じ合えていると感じられる関係。将来を一緒に考え、不安を一人で抱えなくていい安定感のある環境が心地よいです。',
+    tip: '不安を感じたとき、我慢せず「安心させてほしい」と伝える勇気を持ちましょう。相手がその気持ちを理解できると、関係がより深まります。',
+  },
+  5: {
+    name: '愛情表現タイプ（仮）',
+    icon: '💕',
+    desc: 'あなたは、愛情を言葉や行動で伝え合うことを大切にするタイプです。「好き」「大切にしている」という気持ちを直接表現してもらえると、最も愛されていると感じます。日常の中に愛情表現があることが関係の活力になります。',
+    rel: '気持ちを言葉や行動で素直に伝え合える関係。愛情を確認し合えることが、安心感や喜びの源になります。',
+    tip: '相手が愛情表現を苦手としている場合は、「言葉にして伝えてくれると嬉しい」と具体的にリクエストするのが効果的。相手の愛情の伝え方が自分と違うだけで、愛情がないわけではないことも覚えておきましょう。',
+  },
+  6: {
+    name: '自律者タイプ（仮）',
+    icon: '🦋',
+    desc: 'あなたは、個人の自由と自己決定を大切にするタイプです。信頼して任せてもらえる関係で、最も自分らしくいられます。一人の時間や自分のペースを大切にしながら、深く愛し合えるパートナーシップを理想とします。',
+    rel: 'お互いの個性と生活リズムを尊重し合える関係。一人の時間があっても愛情が変わらないという安心感のある関係が心地よいです。',
+    tip: '「干渉しないでほしい」という気持ちは、相手に「自分に興味がないのかな」と誤解されることがあります。自由を大切にしながらも、愛情はしっかり伝えることで、お互いが居心地よくいられます。',
+  },
+};
+
+/* ════════════════════════════════════════
+   状態管理
+════════════════════════════════════════ */
+let curQ = 0;
+let answers = new Array(36).fill(null); // null or choice index (0-3)
+let scores = {};
+let ranking = [];
+
+/* ════════════════════════════════════════
+   画面制御
+════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  requestAnimationFrame(() => {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+/* ════════════════════════════════════════
+   診断フロー
+════════════════════════════════════════ */
+function startDiagnosis() {
+  curQ = 0;
+  answers = new Array(36).fill(null);
+  renderQuestion();
+  showScreen('screen-q');
+}
+
+function restart() {
+  startDiagnosis();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[curQ];
+  const pct = Math.round((curQ / 36) * 100);
+
+  document.getElementById('q-progress-fill').style.width = pct + '%';
+  document.getElementById('q-num').textContent = `Q${curQ + 1} / 36`;
+  document.getElementById('q-category').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.q;
+
+  const container = document.getElementById('q-choices');
+  container.innerHTML = '';
+  const labels = ['A', 'B', 'C', 'D'];
+
+  q.c.forEach(([text], i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn' + (answers[curQ] === i ? ' selected' : '');
+    btn.innerHTML = `
+      <span class="choice-label">${labels[i]}</span>
+      <span class="choice-text">${text}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    container.appendChild(btn);
+  });
+}
+
+let _busy = false;
+function selectAnswer(choiceIdx) {
+  if (_busy) return;
+  _busy = true;
+
+  answers[curQ] = choiceIdx;
+
+  // 選択ハイライト
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === choiceIdx);
+    b.style.pointerEvents = 'none';
+  });
+
+  setTimeout(() => {
+    _busy = false;
+    curQ++;
+    if (curQ < 36) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 300);
+}
+
+function goBack() {
+  if (_busy) return;
+  if (curQ === 0) { showScreen('screen-top'); return; }
+  curQ--;
+  renderQuestion();
+}
+
+/* ════════════════════════════════════════
+   スコア計算
+════════════════════════════════════════ */
+function calcScores() {
+  const raw = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  answers.forEach((ans, qi) => {
+    if (ans === null) return;
+    const valId = QUESTIONS[qi].c[ans][1];
+    raw[valId]++;
+  });
+
+  // 正規化（各価値観の登場回数で割る）→ 0〜1 の比率
+  const norm = {};
+  Object.keys(raw).forEach(id => {
+    norm[id] = OPP[id] > 0 ? raw[id] / OPP[id] : 0;
+  });
+
+  // ランキング（降順）
+  ranking = Object.keys(norm)
+    .map(id => ({ id: Number(id), norm: norm[id], raw: raw[id] }))
+    .sort((a, b) => b.norm - a.norm);
+
+  scores = { raw, norm };
+}
+
+/* ════════════════════════════════════════
+   結果表示
+════════════════════════════════════════ */
+function showResult() {
+  calcScores();
+
+  const top = ranking[0];
+  const char = CHARACTERS[top.id];
+  const val = VALUES.find(v => v.id === top.id);
+
+  // ヘッダー
+  document.getElementById('r-icon').textContent = char.icon;
+  document.getElementById('r-name').textContent = char.name;
+  document.getElementById('r-label').textContent = `1位：${val.label}`;
+
+  // ランキングバーチャート
+  const maxNorm = ranking[0].norm || 1;
+  const rankEl = document.getElementById('r-ranking');
+  rankEl.innerHTML = '';
+
+  ranking.forEach((r, i) => {
+    const v = VALUES.find(v => v.id === r.id);
+    const pct = Math.round(r.norm * 100);
+    const barWidth = Math.round((r.norm / maxNorm) * 100);
+    const rankClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : 'r-other';
+
+    const row = document.createElement('div');
+    row.className = 'rank-item';
+    row.innerHTML = `
+      <div class="rank-num ${rankClass}">${i + 1}</div>
+      <div class="rank-info">
+        <div class="rank-label">${v.label}</div>
+        <div class="rank-bar-wrap">
+          <div class="rank-bar-fill" style="width:0%;background:${v.color}" data-w="${barWidth}"></div>
+        </div>
+      </div>
+      <div class="rank-pct">${pct}%</div>`;
+    rankEl.appendChild(row);
+  });
+
+  // バーアニメーション（少し遅延）
+  setTimeout(() => {
+    document.querySelectorAll('.rank-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+  }, 200);
+
+  // キャラクター説明
+  document.getElementById('r-desc').textContent = char.desc;
+  document.getElementById('r-rel').textContent = char.rel;
+  document.getElementById('r-tip').textContent = char.tip;
+
+  showScreen('screen-result');
+}
+
+/* ════════════════════════════════════════
+   デバッグ画面
+════════════════════════════════════════ */
+function showDebug() {
+  // スコア一覧
+  const dbScores = document.getElementById('db-scores');
+  dbScores.innerHTML = '';
+  ranking.forEach((r, i) => {
+    const v = VALUES.find(v => v.id === r.id);
+    const row = document.createElement('div');
+    row.className = 'debug-score-row';
+    row.innerHTML = `
+      <span class="debug-score-rank">${i + 1}位</span>
+      <span class="debug-score-label">${v.label}</span>
+      <span class="debug-score-val">${r.raw}点 / ${OPP[r.id]}問 （${Math.round(r.norm * 100)}%）</span>`;
+    dbScores.appendChild(row);
+  });
+
+  // 120タイプID（上位3価値観のID順）
+  const typeId = ranking.slice(0, 3).map(r => r.id).join('-');
+  document.getElementById('db-type-id').textContent =
+    `タイプID: ${typeId} ｜ ${ranking.slice(0,3).map(r => VALUES.find(v=>v.id===r.id).label).join(' > ')}`;
+
+  // 36問の回答一覧
+  const dbList = document.getElementById('db-q-list');
+  dbList.innerHTML = '';
+  const labels = ['A', 'B', 'C', 'D'];
+  QUESTIONS.forEach((q, qi) => {
+    const ans = answers[qi];
+    if (ans === null) return;
+    const [choiceText, valId] = q.c[ans];
+    const v = VALUES.find(v => v.id === valId);
+    const row = document.createElement('div');
+    row.className = 'debug-q-row';
+    row.innerHTML = `
+      <span class="debug-q-num">Q${qi + 1}</span>
+      <span class="debug-q-choice">【${labels[ans]}】${choiceText}</span><br>
+      → <span class="debug-q-val">加点：${v.label}</span>`;
+    dbList.appendChild(row);
+  });
+
+  showScreen('screen-debug');
+}
+</script>
+</body>
+</html>
